@@ -40,6 +40,7 @@ public class EnrollmentController {
     @GetMapping("/fetchStudents")
     public ResponseEntity fetchStudents(@RequestParam(value = "class", required = false) String className,
                                         @RequestParam(value = "id", required = false) Long studentId) {
+
         if (className != null && !className.isEmpty()) {
             Subject subject = subjectRepository.findByClassName(className);
             Iterable<Enrollment> enrollments = enrollmentRepository.findBySubject(subject);
