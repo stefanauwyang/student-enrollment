@@ -9,8 +9,8 @@ import javax.persistence.*;
 @Data
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String firstName;
     private String lastName;
     @JsonProperty("class")

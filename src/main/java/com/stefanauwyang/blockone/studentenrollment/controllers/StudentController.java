@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -16,11 +16,8 @@ public class StudentController {
 
     @Autowired
     private StudentRepository studentRepository;
-    
-    private List<Student> students = new ArrayList<>();
 
-    public StudentController() {
-    }
+    private List<Student> students = new ArrayList<>();
 
     @GetMapping("/students")
     public ResponseEntity students() {
@@ -30,13 +27,25 @@ public class StudentController {
 
     @PostMapping("/students")
     public ResponseEntity create(@RequestBody Student student) {
-        students.add(student);
-        return ResponseEntity.ok(student);
+        Student db_student = studentRepository.save(student);
+        return ResponseEntity.ok(db_student);
+    }
+
+    @PutMapping("/students")
+    public ResponseEntity modify(@RequestBody Student student) {
+        Optional<Student> db_student = studentRepository.findById(student.getId());
+        if (db_student.isPresent()) {
+            student.setId(db_student.get().getId());
+            student = studentRepository.save(student);
+            return ResponseEntity.ok(student);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/students")
     public ResponseEntity delete(@RequestBody Student student) {
-        students = students.stream().filter(user -> !user.getId().equals(student.getId())).collect(Collectors.toList());
+        studentRepository.delete(student);
         return ResponseEntity.ok(student);
     }
 }
