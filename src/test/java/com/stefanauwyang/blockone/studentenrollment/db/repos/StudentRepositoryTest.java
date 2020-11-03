@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class StudentRepositoryTest extends TestCase {
+public class StudentRepositoryTest {
 
     @Autowired
     private StudentRepository studentRepository;
