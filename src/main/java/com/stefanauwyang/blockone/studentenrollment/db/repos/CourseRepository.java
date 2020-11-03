@@ -1,6 +1,6 @@
 package com.stefanauwyang.blockone.studentenrollment.db.repos;
 
-import com.stefanauwyang.blockone.studentenrollment.db.models.Clazz;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Semester;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ClazzRepository extends CrudRepository<Clazz, String> {
+public interface CourseRepository extends CrudRepository<Course, String> {
 
-    Optional<Clazz> findByName(String name);
+    Optional<Course> findByName(String name);
 
-    Iterable<Clazz> findBySemester(Optional<Semester> semester);
+    Iterable<Course> findBySemester(Optional<Semester> semester);
 
 }

@@ -18,8 +18,8 @@ INSERT INTO student (id, first_name, last_name, nationality) VALUES
 DROP TABLE IF EXISTS semester;
 
 CREATE TABLE semester (
-  id INT PRIMARY KEY,
-  name VARCHAR(250) NOT NULL
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(250) NOT NULL UNIQUE
 );
 
 INSERT INTO semester (id, name) VALUES
@@ -64,14 +64,13 @@ INSERT INTO class (name, semester_id, credit) VALUES
 DROP TABLE IF EXISTS enrollment;
 
 CREATE TABLE enrollment (
-  semester_id INT NOT NULL,
   class_id VARCHAR(250) NOT NULL,
   student_id INT NOT NULL,
   approved BOOLEAN DEFAULT FALSE
 );
 
-INSERT INTO enrollment (semester_id, class_id, student_id) VALUES
-  (1, '1 A', 1),
-  (1, '2 B', 2),
-  (2, '2 F', 3),
-  (2, '1 I', 3);
+INSERT INTO enrollment (class_id, student_id) VALUES
+  ('1 A', 1),
+  ('2 B', 2),
+  ('2 F', 3),
+  ('1 I', 3);

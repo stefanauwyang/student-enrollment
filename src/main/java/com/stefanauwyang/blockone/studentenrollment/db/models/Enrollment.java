@@ -27,7 +27,7 @@ public class Enrollment implements Serializable {
     @ManyToOne
     @JoinColumn(name = "class_id")
     @JsonProperty("class")
-    private Clazz clazz;
+    private Course course;
 
     @Column
     private Boolean approved = false;

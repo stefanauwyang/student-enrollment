@@ -1,8 +1,8 @@
 package com.stefanauwyang.blockone.studentenrollment.controllers;
 
-import com.stefanauwyang.blockone.studentenrollment.db.models.Clazz;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Semester;
-import com.stefanauwyang.blockone.studentenrollment.db.repos.ClazzRepository;
+import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.SemesterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class SemesterController {
     private SemesterRepository semesterRepository;
 
     @Autowired
-    private ClazzRepository clazzRepository;
+    private CourseRepository courseRepository;
 
     /**
      * API to list all semesters.
@@ -54,7 +54,7 @@ public class SemesterController {
     public ResponseEntity semesterClasses(@PathVariable Long semesterId) {
         Optional<Semester> semester = semesterRepository.findById(semesterId);
         if (semester.isPresent()) {
-            Iterable<Clazz> classes = clazzRepository.findBySemester(semester);
+            Iterable<Course> classes = courseRepository.findBySemester(semester);
             return ResponseEntity.ok(classes);
         } else {
             return ResponseEntity.notFound().build();

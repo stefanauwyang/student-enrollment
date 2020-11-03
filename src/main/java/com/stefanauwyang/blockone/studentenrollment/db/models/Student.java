@@ -21,8 +21,4 @@ public class Student {
     private String lastName;
     private String nationality;
 
-    @ManyToMany
-    @JoinTable(name = "enrollment")
-    private Set<Clazz> classes;
-
 }

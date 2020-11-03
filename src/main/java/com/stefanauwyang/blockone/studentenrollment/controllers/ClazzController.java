@@ -1,7 +1,7 @@
 package com.stefanauwyang.blockone.studentenrollment.controllers;
 
-import com.stefanauwyang.blockone.studentenrollment.db.models.Clazz;
-import com.stefanauwyang.blockone.studentenrollment.db.repos.ClazzRepository;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
+import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClazzController {
 
     @Autowired
-    private ClazzRepository clazzRepository;
+    private CourseRepository courseRepository;
 
     @Autowired
     private StudentRepository studentRepository;
@@ -26,7 +26,7 @@ public class ClazzController {
      */
     @GetMapping("/classes")
     public ResponseEntity classes() {
-        Iterable<Clazz> classes = clazzRepository.findAll();
+        Iterable<Course> classes = courseRepository.findAll();
         return ResponseEntity.ok(classes);
     }
 

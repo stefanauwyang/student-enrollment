@@ -2,7 +2,7 @@ package com.stefanauwyang.blockone.studentenrollment.controllers;
 
 import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
-import com.stefanauwyang.blockone.studentenrollment.db.repos.ClazzRepository;
+import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class StudentController {
     private StudentRepository studentRepository;
 
     @Autowired
-    private ClazzRepository clazzRepository;
+    private CourseRepository courseRepository;
 
     @Autowired
     private EnrollmentRepository enrollmentRepository;

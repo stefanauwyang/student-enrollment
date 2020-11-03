@@ -1,9 +1,9 @@
 package com.stefanauwyang.blockone.studentenrollment.controllers;
 
-import com.stefanauwyang.blockone.studentenrollment.db.models.Clazz;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
-import com.stefanauwyang.blockone.studentenrollment.db.repos.ClazzRepository;
+import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class EnrollmentController {
     private StudentRepository studentRepository;
 
     @Autowired
-    private ClazzRepository clazzRepository;
+    private CourseRepository courseRepository;
 
     @GetMapping("/enrollments")
     public ResponseEntity enrollments() {
@@ -51,10 +51,10 @@ public class EnrollmentController {
     }
 
     @GetMapping("/enrollments/classes/{className}/students")
-    public ResponseEntity fetchStudentsByEnrolledClass(@PathVariable("className") String className) {
-        Optional<Clazz> clazz = clazzRepository.findByName(className);
-        if (clazz.isPresent()) {
-            Iterable<Enrollment> enrollments = enrollmentRepository.findByClazz(clazz.get());
+    public ResponseEntity fetchStudentsByEnrolledClass(@PathVariable("courseName") String courseName) {
+        Optional<Course> course = courseRepository.findByName(courseName);
+        if (course.isPresent()) {
+            Iterable<Enrollment> enrollments = enrollmentRepository.findByCourse(course.get());
             List<Student> students = StreamSupport.stream(enrollments.spliterator(), false)
                     .map(enrollment -> enrollment.getStudent())
                     .collect(Collectors.toList());

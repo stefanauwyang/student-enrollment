@@ -6,7 +6,8 @@ import javax.persistence.*;
 
 @Entity(name = "class")
 @Data
-public class Clazz {
+public class Course {
+
     @Id
     private String name;
     @Column
@@ -14,4 +15,5 @@ public class Clazz {
     @ManyToOne
     @JoinColumn(name = "semester_id")
     private Semester semester;
+
 }
