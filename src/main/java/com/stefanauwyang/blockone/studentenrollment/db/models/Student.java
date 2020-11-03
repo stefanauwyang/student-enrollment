@@ -1,17 +1,16 @@
 package com.stefanauwyang.blockone.studentenrollment.db.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Student {
 
     @Id
@@ -21,5 +20,9 @@ public class Student {
     private String firstName;
     private String lastName;
     private String nationality;
+
+    @ManyToMany
+    @JoinTable(name = "enrollment")
+    private Set<Clazz> classes;
 
 }
