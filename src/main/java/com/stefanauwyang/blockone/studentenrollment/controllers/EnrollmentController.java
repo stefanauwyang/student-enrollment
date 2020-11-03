@@ -86,8 +86,8 @@ public class EnrollmentController {
     public ResponseEntity fetchStudentsByEnrolledClass(@PathVariable("courseName") String courseName) {
         Optional<Course> course = courseRepository.findByName(courseName);
         if (course.isPresent()) {
-            Iterable<Enrollment> enrollments = enrollmentRepository.finAllByCourse(course.get());
-            List<Student> students = StreamSupport.stream(enrollments.spliterator(), false)
+            Iterable<Enrollment> enrollments = enrollmentRepository.findAllByCourse(course.get());
+            List<Student> students = StreamSupport.stream(enrollments.spliterator(), true)
                     .map(enrollment -> enrollment.getStudent())
                     .collect(Collectors.toList());
             return ResponseEntity.ok(students);

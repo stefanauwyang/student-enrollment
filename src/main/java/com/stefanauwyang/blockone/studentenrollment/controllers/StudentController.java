@@ -1,15 +1,20 @@
 package com.stefanauwyang.blockone.studentenrollment.controllers;
 
+import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
+import com.stefanauwyang.blockone.studentenrollment.db.repos.SemesterRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping
@@ -23,6 +28,9 @@ public class StudentController {
 
     @Autowired
     private EnrollmentRepository enrollmentRepository;
+
+    @Autowired
+    private SemesterRepository semesterRepository;
 
     /**
      * API to add new student.
@@ -97,8 +105,41 @@ public class StudentController {
      */
     @GetMapping("/students/{studentId}/enrollments")
     public ResponseEntity enrollments(@PathVariable("studentId") Long studentId) {
-        Iterable<Enrollment> enrollments = enrollmentRepository.findByStudent(Student.builder().id(studentId).build());
+        Iterable<Enrollment> enrollments = enrollmentRepository.findAllByStudent(Student.builder().id(studentId).build());
         return ResponseEntity.ok(enrollments);
+    }
+
+    /**
+     * Get student enrolled courses.
+     *
+     * @param studentId as filter
+     * @return courses enrolled for the studentId
+     */
+    @GetMapping("/students/{studentId}/classes")
+    public ResponseEntity courses(@PathVariable("studentId") Long studentId) {
+        Iterable<Enrollment> enrollments = enrollmentRepository.findAllByStudent(Student.builder().id(studentId).build());
+        List<Course> courses = StreamSupport.stream(enrollments.spliterator(), true)
+                .map(enrollment -> courseRepository.findByName(enrollment.getCourse().getName()).orElse(null))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(courses);
+    }
+
+    /**
+     * Get student enrolled courses in a semester.
+     *
+     * @param studentId as filter
+     * @param semesterId as filter
+     * @return courses for the studentId in a semesterId
+     */
+    @GetMapping("/students/{studentId}/semesters/{semesterId}/classes")
+    public ResponseEntity semesters(@PathVariable("studentId") Long studentId,
+                                    @PathVariable("semesterId") Long semesterId) {
+        Iterable<Enrollment> enrollments = enrollmentRepository.findAllByStudent(Student.builder().id(studentId).build());
+        List<Course> courses = StreamSupport.stream(enrollments.spliterator(), true)
+                .map(enrollment -> courseRepository.findByName(enrollment.getCourse().getName()).orElse(null))
+                .filter(course -> semesterId == course.getSemester().getId())
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(courses);
     }
 
     /**
