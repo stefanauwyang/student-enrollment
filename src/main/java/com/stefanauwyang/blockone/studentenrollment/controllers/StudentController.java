@@ -5,7 +5,7 @@ import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
-import com.stefanauwyang.blockone.studentenrollment.db.repos.ClassRepository;
+import com.stefanauwyang.blockone.studentenrollment.db.repos.ClazzRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class StudentController {
     private StudentRepository studentRepository;
 
     @Autowired
-    private ClassRepository classRepository;
+    private ClazzRepository clazzRepository;
 
     @Autowired
     private EnrollmentRepository enrollmentRepository;
@@ -75,9 +75,26 @@ public class StudentController {
     }
 
     /**
-     * Get current student enrollments.
+     * API to get a student by student id.
      *
-     * @return
+     * @param studentId of student
+     * @return student from db
+     */
+    @GetMapping("/students/{studentId}")
+    public ResponseEntity getStudent(@PathVariable("studentId") Long studentId) {
+        Optional<Student> db_student = studentRepository.findById(studentId);
+        if (db_student.isPresent()) {
+            return ResponseEntity.ok(db_student.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Get student current enrollments.
+     *
+     * @param studentId
+     * @return enrollments for the student
      */
     @GetMapping("/students/{studentId}/enrollments")
     public ResponseEntity enrollments(@PathVariable("studentId") Long studentId) {
@@ -88,30 +105,24 @@ public class StudentController {
     /**
      * API to list students with filter.
      *
-     * @param className
-     * @param studentId
-     * @return
+     * @param firstName as optional filter
+     * @param lastName as optional filter
+     * @param nationality as optional filter
+     * @return students from db
      */
     @GetMapping("/students")
-    public ResponseEntity fetchStudents(@RequestParam(value = "class", required = false) String className,
-                                        @RequestParam(value = "id", required = false) Long studentId) {
-
-        if (className != null && !className.isEmpty()) {
-            Optional<Clazz> clazz = classRepository.findById(className);
-            if (clazz.isPresent()) {
-                Iterable<Enrollment> enrollments = enrollmentRepository.findByClazz(clazz.get());
-                return ResponseEntity.ok(enrollments);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } else if (studentId != null) {
-            Iterable<Enrollment> enrollments = enrollmentRepository.findByStudent(Student.builder().id(studentId).build());
-            return ResponseEntity.ok(enrollments);
+    public ResponseEntity fetchStudents(@RequestParam(value = "first_name") Optional<String> firstName,
+                                        @RequestParam(value = "last_name") Optional<String> lastName,
+                                        @RequestParam(value = "nationality") Optional<String> nationality) {
+        if (firstName.isPresent()
+                || lastName.isPresent()
+                || nationality.isPresent()) {
+            Iterable<Student> students = studentRepository.findAllByFirstNameOrLastNameOrNationality(firstName, lastName, nationality);
+            return ResponseEntity.ok(students);
         } else {
             Iterable<Student> students = studentRepository.findAll();
             return ResponseEntity.ok(students);
         }
-
     }
 
 
