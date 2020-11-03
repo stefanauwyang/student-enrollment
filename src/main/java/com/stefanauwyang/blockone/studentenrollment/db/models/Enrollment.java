@@ -1,5 +1,7 @@
 package com.stefanauwyang.blockone.studentenrollment.db.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.stefanauwyang.blockone.studentenrollment.db.models.pk.EnrollmentId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +25,8 @@ public class Enrollment implements Serializable {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "subject_id")
+    @JoinColumn(name = "class_name")
+    @JsonProperty("class")
     private Clazz clazz;
 
     @Column

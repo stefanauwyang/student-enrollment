@@ -65,12 +65,13 @@ DROP TABLE IF EXISTS enrollment;
 
 CREATE TABLE enrollment (
   semester_id INT NOT NULL,
-  subject_id INT NOT NULL,
-  student_id INT NOT NULL
+  class_name VARCHAR(250) NOT NULL,
+  student_id INT NOT NULL,
+  approved BOOLEAN DEFAULT FALSE
 );
 
-INSERT INTO enrollment (semester_id, subject_id, student_id) VALUES
-  (1, 1, 1),
-  (1, 2, 2),
-  (2, 2, 3),
-  (2, 3, 3);
+INSERT INTO enrollment (semester_id, class_name, student_id) VALUES
+  (1, '1 A', 1),
+  (1, '2 B', 2),
+  (2, '2 F', 3),
+  (2, '1 I', 3);

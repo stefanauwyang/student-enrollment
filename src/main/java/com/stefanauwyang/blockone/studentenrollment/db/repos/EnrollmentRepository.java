@@ -1,7 +1,7 @@
 package com.stefanauwyang.blockone.studentenrollment.db.repos;
 
 import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
-import com.stefanauwyang.blockone.studentenrollment.db.models.EnrollmentId;
+import com.stefanauwyang.blockone.studentenrollment.db.models.pk.EnrollmentId;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Clazz;
 import org.springframework.data.repository.CrudRepository;

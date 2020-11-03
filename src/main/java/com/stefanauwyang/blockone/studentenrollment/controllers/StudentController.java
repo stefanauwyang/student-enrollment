@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping
 public class StudentController {
 
     @Autowired
@@ -26,21 +26,10 @@ public class StudentController {
     private EnrollmentRepository enrollmentRepository;
 
     /**
-     * List all students.
+     * API to add new student.
      *
-     * @return
-     */
-    @GetMapping("/students")
-    public ResponseEntity students() {
-        Iterable<Student> students = studentRepository.findAll();
-        return ResponseEntity.ok(students);
-    }
-
-    /**
-     * Add new student.
-     *
-     * @param student
-     * @return
+     * @param student to be added
+     * @return student from db
      */
     @PostMapping("/students")
     public ResponseEntity addStudent(@RequestBody Student student) {
@@ -49,10 +38,10 @@ public class StudentController {
     }
 
     /**
-     * Modify existing student.
+     * API to modify existing student.
      *
-     * @param student
-     * @return
+     * @param student to be modified
+     * @return student from db
      */
     @PutMapping("/students")
     public ResponseEntity modifyStudent(@RequestBody Student student) {
@@ -66,7 +55,25 @@ public class StudentController {
         }
     }
 
-    @GetMapping("/fetchStudents")
+    /**
+     * Get current student enrollments.
+     *
+     * @return
+     */
+    @GetMapping("/students/{studentId}/enrollments")
+    public ResponseEntity enrollments(@PathVariable("studentId") Long studentId) {
+        Iterable<Enrollment> enrollments = enrollmentRepository.findByStudent(Student.builder().id(studentId).build());
+        return ResponseEntity.ok(enrollments);
+    }
+
+    /**
+     * API to list students with filter.
+     *
+     * @param className
+     * @param studentId
+     * @return
+     */
+    @GetMapping("/students")
     public ResponseEntity fetchStudents(@RequestParam(value = "class", required = false) String className,
                                         @RequestParam(value = "id", required = false) Long studentId) {
 
@@ -82,7 +89,8 @@ public class StudentController {
             Iterable<Enrollment> enrollments = enrollmentRepository.findByStudent(Student.builder().id(studentId).build());
             return ResponseEntity.ok(enrollments);
         } else {
-            return ResponseEntity.badRequest().build();
+            Iterable<Student> students = studentRepository.findAll();
+            return ResponseEntity.ok(students);
         }
 
     }

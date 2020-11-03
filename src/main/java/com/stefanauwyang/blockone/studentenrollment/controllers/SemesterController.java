@@ -7,12 +7,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping
 public class SemesterController {
 
     @Autowired
     private SemesterRepository semesterRepository;
 
+    /**
+     * API to list all semesters.
+     *
+     * @return all semesters
+     */
     @GetMapping("/semesters")
     public ResponseEntity semesters() {
         Iterable<Semester> semesters = semesterRepository.findAll();
@@ -20,10 +25,11 @@ public class SemesterController {
     }
 
     /**
-     * API to create a new semester by administrator.
+     * API to create a new semester.
+     * This API should be used by an administrator.
      *
-     * @param semester
-     * @return
+     * @param semester to be created
+     * @return semester from db
      */
     @PostMapping("/semesters")
     public ResponseEntity createSemester(@RequestBody Semester semester) {
