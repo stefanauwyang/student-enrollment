@@ -66,11 +66,12 @@ DROP TABLE IF EXISTS enrollment;
 CREATE TABLE enrollment (
   class_id VARCHAR(250) NOT NULL,
   student_id INT NOT NULL,
+  enroll_dt DATETIME DEFAULT NULL,
   approved BOOLEAN DEFAULT FALSE
 );
 
-INSERT INTO enrollment (class_id, student_id) VALUES
-  ('1 A', 1),
-  ('2 B', 2),
-  ('2 F', 3),
-  ('1 I', 3);
+INSERT INTO enrollment (class_id, enroll_dt, student_id) VALUES
+  ('1 A', '2020-01-01T01:20:03', 1),
+  ('2 B', '2020-01-02T23:02:31', 2),
+  ('2 F', '2020-01-03T09:05:53', 3),
+  ('1 I', '2020-01-04T07:32:04', 3);

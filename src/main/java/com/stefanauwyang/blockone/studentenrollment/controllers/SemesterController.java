@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+/**
+ * Group of APIs to serve semester related operations.
+ *
+ */
 @RestController
-@RequestMapping
 public class SemesterController {
 
     @Autowired

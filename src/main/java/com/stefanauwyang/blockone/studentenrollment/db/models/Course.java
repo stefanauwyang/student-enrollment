@@ -4,6 +4,10 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+/**
+ * Represents a class which linked to a semester.
+ *
+ */
 @Entity(name = "class")
 @Data
 public class Course {

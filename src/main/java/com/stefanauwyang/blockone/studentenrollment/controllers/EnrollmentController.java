@@ -15,8 +15,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Group of APIs to serve enrollment related operations.
+ *
+ */
 @RestController
-@RequestMapping
 public class EnrollmentController {
 
     @Autowired
@@ -50,11 +53,18 @@ public class EnrollmentController {
         }
     }
 
+    /**
+     * Enroll student to a class.
+     *
+     * @param className to be enrolled by a studentId
+     * @param studentId to be enrolled to a class
+     * @return enrollment from db
+     */
     @PostMapping("/enrollments/classes/{className}/students/{studentId}/enroll")
-    public ResponseEntity enrollStudentToClass(@PathVariable("courseName") String courseName,
+    public ResponseEntity enrollStudentToClass(@PathVariable("className") String className,
                                                @PathVariable("studentId") Long studentId) {
 
-        Optional<Course> db_course = courseRepository.findByName(courseName);
+        Optional<Course> db_course = courseRepository.findByName(className);
         Optional<Student> db_student = studentRepository.findById(studentId);
 
         if (!db_course.isPresent() || !db_student.isPresent()) {
@@ -82,13 +92,19 @@ public class EnrollmentController {
 
     }
 
-    @GetMapping("/enrollments/classes/{courseName}/students")
-    public ResponseEntity fetchStudentsByEnrolledClass(@PathVariable("courseName") String courseName) {
-        Optional<Course> course = courseRepository.findByName(courseName);
+    /**
+     * Get list of students enrolled to a class.
+     *
+     * @param className as filter
+     * @return list of students enrolled to given class.
+     */
+    @GetMapping("/enrollments/classes/{className}/students")
+    public ResponseEntity fetchStudentsByEnrolledClass(@PathVariable("className") String className) {
+        Optional<Course> course = courseRepository.findByName(className);
         if (course.isPresent()) {
             Iterable<Enrollment> enrollments = enrollmentRepository.findAllByCourse(course.get());
             List<Student> students = StreamSupport.stream(enrollments.spliterator(), true)
-                    .map(enrollment -> enrollment.getStudent())
+                    .map(Enrollment::getStudent)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(students);
         } else {

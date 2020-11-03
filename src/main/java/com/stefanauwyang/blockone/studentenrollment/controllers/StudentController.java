@@ -16,8 +16,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Group of APIs to serve student related operations.
+ *
+ */
 @RestController
-@RequestMapping
 public class StudentController {
 
     @Autowired
@@ -47,7 +50,8 @@ public class StudentController {
     /**
      * API to modify existing student.
      *
-     * @param student to be modified
+     * @param studentId as id to be modified
+     * @param student as data to be modified
      * @return student from db
      */
     @PutMapping("/students/{studentId}")
@@ -98,9 +102,9 @@ public class StudentController {
     }
 
     /**
-     * Get student current enrollments.
+     * Get current enrollments of a student.
      *
-     * @param studentId
+     * @param studentId as id enrolled
      * @return enrollments for the student
      */
     @GetMapping("/students/{studentId}/enrollments")
