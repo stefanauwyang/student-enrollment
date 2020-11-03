@@ -19,5 +19,6 @@ public class Student {
     private String firstName;
     private String lastName;
     private String nationality;
+    private Boolean full_time = false;
 
 }

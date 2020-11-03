@@ -4,7 +4,8 @@ CREATE TABLE student (
   id INT AUTO_INCREMENT PRIMARY KEY,
   first_name VARCHAR(250) NOT NULL,
   last_name VARCHAR(250) DEFAULT NULL,
-  nationality VARCHAR(100) DEFAULT NULL
+  nationality VARCHAR(100) DEFAULT NULL,
+  full_time BOOLEAN DEFAULT FALSE
 );
 
 INSERT INTO student (id, first_name, last_name, nationality) VALUES
