@@ -50,11 +50,43 @@ public class EnrollmentController {
         }
     }
 
-    @GetMapping("/enrollments/classes/{className}/students")
+    @PostMapping("/enrollments/classes/{className}/students/{studentId}/enroll")
+    public ResponseEntity enrollStudentToClass(@PathVariable("courseName") String courseName,
+                                               @PathVariable("studentId") Long studentId) {
+
+        Optional<Course> db_course = courseRepository.findByName(courseName);
+        Optional<Student> db_student = studentRepository.findById(studentId);
+
+        if (!db_course.isPresent() || !db_student.isPresent()) {
+            return ResponseEntity.notFound().build();
+        } else {
+
+            Optional<Enrollment> db_enrollment = enrollmentRepository.findByCourseAndStudent(db_course.get(), db_student.get());
+
+            if (db_enrollment.isPresent()) {
+
+                return ResponseEntity.unprocessableEntity().build();
+
+            } else {
+
+                Enrollment enrollment = Enrollment.builder()
+                        .course(db_course.get())
+                        .student(db_student.get())
+                        .build();
+                enrollment = enrollmentRepository.save(enrollment);
+                return ResponseEntity.ok(enrollment);
+
+            }
+
+        }
+
+    }
+
+    @GetMapping("/enrollments/classes/{courseName}/students")
     public ResponseEntity fetchStudentsByEnrolledClass(@PathVariable("courseName") String courseName) {
         Optional<Course> course = courseRepository.findByName(courseName);
         if (course.isPresent()) {
-            Iterable<Enrollment> enrollments = enrollmentRepository.findByCourse(course.get());
+            Iterable<Enrollment> enrollments = enrollmentRepository.finAllByCourse(course.get());
             List<Student> students = StreamSupport.stream(enrollments.spliterator(), false)
                     .map(enrollment -> enrollment.getStudent())
                     .collect(Collectors.toList());

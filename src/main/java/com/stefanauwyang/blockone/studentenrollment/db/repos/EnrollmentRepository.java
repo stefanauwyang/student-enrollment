@@ -7,10 +7,13 @@ import com.stefanauwyang.blockone.studentenrollment.db.models.pk.EnrollmentId;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface EnrollmentRepository extends CrudRepository<Enrollment, EnrollmentId> {
 
-    Iterable<Enrollment> findByCourse(Course course);
-    Iterable<Enrollment> findByStudent(Student student);
+    Iterable<Enrollment> finAllByCourse(Course course);
+    Iterable<Enrollment> findAllByStudent(Student student);
+    Optional<Enrollment> findByCourseAndStudent(Course course, Student student);
 
 }
