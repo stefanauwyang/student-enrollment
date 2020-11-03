@@ -43,11 +43,12 @@ public class StudentController {
      * @param student to be modified
      * @return student from db
      */
-    @PutMapping("/students")
-    public ResponseEntity modifyStudent(@RequestBody Student student) {
-        Optional<Student> db_student = studentRepository.findById(student.getId());
+    @PutMapping("/students/{studentId}")
+    public ResponseEntity modifyStudent(@PathVariable("studentId") Long studentId,
+                                        @RequestBody Student student) {
+        Optional<Student> db_student = studentRepository.findById(studentId);
         if (db_student.isPresent()) {
-            student.setId(db_student.get().getId());
+            student.setId(studentId);
             student = studentRepository.save(student);
             return ResponseEntity.ok(student);
         } else {
