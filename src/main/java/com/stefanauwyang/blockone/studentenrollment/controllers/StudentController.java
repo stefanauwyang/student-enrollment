@@ -56,6 +56,24 @@ public class StudentController {
     }
 
     /**
+     * API to delete existing student.
+     *
+     * @param studentId to be deleted
+     * @return student deleted from db
+     */
+    @DeleteMapping("/students/{studentId}")
+    public ResponseEntity deleteStudent(@PathVariable("studentId") Long studentId) {
+        Optional<Student> db_student = studentRepository.findById(studentId);
+        if (db_student.isPresent()) {
+            Student student = db_student.get();
+            studentRepository.delete(student);
+            return ResponseEntity.ok(student);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
      * Get current student enrollments.
      *
      * @return
