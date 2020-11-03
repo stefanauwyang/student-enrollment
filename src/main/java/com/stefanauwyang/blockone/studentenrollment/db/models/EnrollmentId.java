@@ -1,4 +1,4 @@
-package com.stefanauwyang.blockone.studentenrollment.model;
+package com.stefanauwyang.blockone.studentenrollment.db.models;
 
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -7,7 +7,6 @@ import java.io.Serializable;
 public class EnrollmentId implements Serializable {
 
     private Student student;
-    private Semester semester;
-    private Subject subject;
+    private Clazz clazz;
 
 }

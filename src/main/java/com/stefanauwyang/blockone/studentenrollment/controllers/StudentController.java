@@ -1,9 +1,11 @@
 package com.stefanauwyang.blockone.studentenrollment.controllers;
 
-import com.stefanauwyang.blockone.studentenrollment.model.Student;
-import com.stefanauwyang.blockone.studentenrollment.repos.EnrollmentRepository;
-import com.stefanauwyang.blockone.studentenrollment.repos.StudentRepository;
-import com.stefanauwyang.blockone.studentenrollment.repos.SubjectRepository;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Clazz;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
+import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
+import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
+import com.stefanauwyang.blockone.studentenrollment.db.repos.ClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class StudentController {
     private StudentRepository studentRepository;
 
     @Autowired
-    private SubjectRepository subjectRepository;
+    private ClassRepository classRepository;
 
     @Autowired
     private EnrollmentRepository enrollmentRepository;
@@ -63,5 +65,27 @@ public class StudentController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/fetchStudents")
+    public ResponseEntity fetchStudents(@RequestParam(value = "class", required = false) String className,
+                                        @RequestParam(value = "id", required = false) Long studentId) {
+
+        if (className != null && !className.isEmpty()) {
+            Optional<Clazz> clazz = classRepository.findById(className);
+            if (clazz.isPresent()) {
+                Iterable<Enrollment> enrollments = enrollmentRepository.findByClazz(clazz.get());
+                return ResponseEntity.ok(enrollments);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else if (studentId != null) {
+            Iterable<Enrollment> enrollments = enrollmentRepository.findByStudent(Student.builder().id(studentId).build());
+            return ResponseEntity.ok(enrollments);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
 
 }

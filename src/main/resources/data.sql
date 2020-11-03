@@ -13,6 +13,8 @@ INSERT INTO student (id, first_name, last_name, nationality) VALUES
   (3, 'Anastasia', 'Potter', 'Indonesia'),
   (4, 'James', 'Bond', 'Indonesia');
 
+-------------------------------------------------------------------
+
 DROP TABLE IF EXISTS semester;
 
 CREATE TABLE semester (
@@ -25,18 +27,39 @@ INSERT INTO semester (id, name) VALUES
   (2, '2019-2'),
   (3, '2020-1');
 
-DROP TABLE IF EXISTS subject;
+-------------------------------------------------------------------
 
-CREATE TABLE subject (
-  id INT PRIMARY KEY,
-  class_name VARCHAR(250) NOT NULL,
+DROP TABLE IF EXISTS class;
+
+CREATE TABLE class (
+  name VARCHAR(250) PRIMARY KEY,
+  semester_id INT,
   credit INT
 );
 
-INSERT INTO subject (id, class_name, credit) VALUES
-  (1, '3 A', 2),
-  (2, '3 C', 4),
-  (3, '2 B', 3);
+INSERT INTO class (name, semester_id, credit) VALUES
+  ('1 A', 1, 1),
+  ('1 B', 1, 2),
+  ('1 C', 1, 3),
+  ('1 D', 1, 4),
+  ('1 E', 1, 1),
+  ('1 F', 1, 2),
+  ('1 G', 1, 3),
+  ('1 H', 1, 4),
+  ('1 I', 1, 1),
+  ('1 J', 1, 2),
+  ('2 A', 2, 3),
+  ('2 B', 2, 4),
+  ('2 C', 2, 1),
+  ('2 D', 2, 2),
+  ('2 E', 2, 3),
+  ('2 F', 2, 4),
+  ('2 G', 2, 1),
+  ('2 H', 2, 2),
+  ('2 I', 2, 3),
+  ('2 J', 2, 4);
+
+-------------------------------------------------------------------
 
 DROP TABLE IF EXISTS enrollment;
 

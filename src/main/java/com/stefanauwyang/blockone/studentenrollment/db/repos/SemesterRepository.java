@@ -1,7 +1,6 @@
-package com.stefanauwyang.blockone.studentenrollment.repos;
+package com.stefanauwyang.blockone.studentenrollment.db.repos;
 
-import com.stefanauwyang.blockone.studentenrollment.model.Semester;
-import com.stefanauwyang.blockone.studentenrollment.model.Student;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Semester;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.stefanauwyang.blockone.studentenrollment.model;
+package com.stefanauwyang.blockone.studentenrollment.db.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
