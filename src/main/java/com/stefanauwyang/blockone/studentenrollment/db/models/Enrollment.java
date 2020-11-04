@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Entity
 @IdClass(EnrollmentId.class)
@@ -26,14 +25,14 @@ public class Enrollment implements Serializable {
 
     @Id
     @ManyToOne
+    @JoinColumn(name = "semester_id")
+    @JsonProperty("semester")
+    private Semester semester;
+
+    @Id
+    @ManyToOne
     @JoinColumn(name = "class_id")
     @JsonProperty("class")
     private Course course;
-
-    @Column
-    private LocalDateTime enrollDt;
-
-    @Column
-    private Boolean approved = false;
 
 }

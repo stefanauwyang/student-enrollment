@@ -48,12 +48,12 @@ public class CourseController {
     /**
      * Get list of students registered in a class.
      *
-     * @param className
+     * @param classId
      * @return list of enrolled students
      */
-    @GetMapping("/classes/{className}/students")
-    public ResponseEntity classStudents(@PathVariable("className") String className) {
-        Optional<Course> db_course = courseRepository.findByName(className);
+    @GetMapping("/classes/{classId}/students")
+    public ResponseEntity classStudents(@PathVariable("classId") Long classId) {
+        Optional<Course> db_course = courseRepository.findById(classId);
         if (!db_course.isPresent()) {
             return ResponseEntity.notFound().build();
         } else {

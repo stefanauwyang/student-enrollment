@@ -13,11 +13,10 @@ import javax.persistence.*;
 public class Course {
 
     @Id
+    private Long id;
+    @Column
     private String name;
     @Column
     private Integer credit;
-    @ManyToOne
-    @JoinColumn(name = "semester_id")
-    private Semester semester;
 
 }

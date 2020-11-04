@@ -47,21 +47,4 @@ public class SemesterController {
         return ResponseEntity.ok(semester);
     }
 
-    /**
-     * API to list classes on a semester.
-     *
-     * @param semesterId as filter
-     * @return list of classes
-     */
-    @GetMapping("/semesters/{semesterId}/classes")
-    public ResponseEntity semesterClasses(@PathVariable Long semesterId) {
-        Optional<Semester> semester = semesterRepository.findById(semesterId);
-        if (semester.isPresent()) {
-            Iterable<Course> classes = courseRepository.findBySemester(semester);
-            return ResponseEntity.ok(classes);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
 }

@@ -2,6 +2,7 @@ package com.stefanauwyang.blockone.studentenrollment.controllers;
 
 import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Semester;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
@@ -138,10 +139,10 @@ public class StudentController {
     @GetMapping("/students/{studentId}/semesters/{semesterId}/classes")
     public ResponseEntity semesters(@PathVariable("studentId") Long studentId,
                                     @PathVariable("semesterId") Long semesterId) {
-        Iterable<Enrollment> enrollments = enrollmentRepository.findAllByStudent(Student.builder().id(studentId).build());
+        Iterable<Enrollment> enrollments = enrollmentRepository.findAllByStudentOrSemester(Student.builder().id(studentId).build(),
+                Semester.builder().id(semesterId).build());
         List<Course> courses = StreamSupport.stream(enrollments.spliterator(), true)
-                .map(enrollment -> courseRepository.findByName(enrollment.getCourse().getName()).orElse(null))
-                .filter(course -> semesterId == course.getSemester().getId())
+                .map(enrollment -> courseRepository.findById(enrollment.getCourse().getId()).orElse(null))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(courses);
     }
