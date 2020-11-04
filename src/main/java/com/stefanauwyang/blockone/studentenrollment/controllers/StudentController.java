@@ -149,24 +149,28 @@ public class StudentController {
     /**
      * API to list students with filter.
      *
+     * @param id          as optional filter
      * @param firstName   as optional filter
      * @param lastName    as optional filter
      * @param nationality as optional filter
      * @return students from db
      */
     @GetMapping("/students")
-    public ResponseEntity fetchStudents(@RequestParam(value = "first_name") Optional<String> firstName,
+    public ResponseEntity fetchStudents(@RequestParam(value = "id") Optional<Long> id,
+                                        @RequestParam(value = "first_name") Optional<String> firstName,
                                         @RequestParam(value = "last_name") Optional<String> lastName,
                                         @RequestParam(value = "nationality") Optional<String> nationality) {
-        if (firstName.isPresent()
-                || lastName.isPresent()
-                || nationality.isPresent()) {
-            List<Student> students = studentRepository.findAllByFirstNameOrLastNameOrNationality(firstName, lastName, nationality);
-            return ResponseEntity.ok(students);
+
+        List<Student> students;
+
+        if (id.isPresent() || firstName.isPresent() || lastName.isPresent() || nationality.isPresent()) {
+            students = studentRepository.findAllByIdOrFirstNameOrLastNameOrNationality(id, firstName, lastName, nationality);
         } else {
-            List<Student> students = studentRepository.findAll();
-            return ResponseEntity.ok(students);
+            students = studentRepository.findAll();
         }
+
+        return ResponseEntity.ok(students);
+
     }
 
 

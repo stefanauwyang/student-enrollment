@@ -2,7 +2,7 @@
 <configuration>
 
     <property name="LOG_LOCATION" value="." />
-    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-5level [%-25.25logger:%3.4line] %msg%n" />
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-5level [%-35.35logger:%3.4line] %msg%n" />
 
     <appender name="file" class="ch.qos.logback.core.FileAppender">
         <file>${LOG_LOCATION}/blockone.log</file>
@@ -14,12 +14,13 @@
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[%-5level] %msg%n</pattern>
+            <pattern>${LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 
     <logger name="org.springframework" level="info" additivity="false">
         <appender-ref ref="file" />
+        <appender-ref ref="console" />
     </logger>
 
     <logger name="com.stefanauwyang.blockone" level="debug" additivity="false">
@@ -29,6 +30,7 @@
 
     <root level="debug">
         <appender-ref ref="file"/>
+        <appender-ref ref="console" />
     </root>
 
 </configuration>

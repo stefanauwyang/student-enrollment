@@ -60,16 +60,19 @@ public class CourseController {
      */
     @GetMapping("/classes/{classId}/students")
     public ResponseEntity classStudents(@PathVariable("classId") Long classId) {
+
+        // Find if class exists
         Optional<Course> db_course = courseRepository.findById(classId);
-        if (!db_course.isPresent()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            List<Enrollment> enrollments = enrollmentRepository.findAllByCourse(db_course.get());
-            List<Student> students = enrollments.stream()
-                    .map(Enrollment::getStudent)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(students);
-        }
+
+        // If class not exists, no need to continue
+        if (!db_course.isPresent()) return ResponseEntity.notFound().build();
+
+        // Find enrollments and return the students
+        List<Enrollment> enrollments = enrollmentRepository.findAllByCourse(db_course.get());
+        List<Student> students = enrollments.stream()
+                .map(Enrollment::getStudent)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(students);
     }
 
 }

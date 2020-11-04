@@ -5,12 +5,10 @@ import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.SemesterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Group of APIs to serve semester related operations.
@@ -27,12 +25,26 @@ public class SemesterController {
     /**
      * API to list all semesters.
      *
-     * @return all semesters
+     * @param id     as optional filter
+     * @param name   as optional filter
+     * @param status as optional filter
+     * @return all filtered semesters
      */
     @GetMapping("/semesters")
-    public ResponseEntity semesters() {
-        List<Semester> semesters = semesterRepository.findAll();
+    public ResponseEntity semesters(@RequestParam("id") Optional<Long> id,
+                                    @RequestParam("name") Optional<String> name,
+                                    @RequestParam("status") Optional<String> status) {
+
+        List<Semester> semesters;
+
+        if (id.isPresent() || name.isPresent() || status.isPresent()) {
+            semesters = semesterRepository.findAllByIdOrNameOrStatus(id, name, status);
+        } else {
+            semesters = semesterRepository.findAll();
+        }
+
         return ResponseEntity.ok(semesters);
+
     }
 
     /**

@@ -55,7 +55,7 @@ public class EnrollmentController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-        
+
     }
 
     /**
