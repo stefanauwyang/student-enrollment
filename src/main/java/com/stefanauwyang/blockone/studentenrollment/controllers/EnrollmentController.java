@@ -15,11 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Group of APIs to serve enrollment related operations.
- *
  */
 @RestController
 public class EnrollmentController {
@@ -38,7 +36,7 @@ public class EnrollmentController {
 
     @GetMapping("/enrollments")
     public ResponseEntity getEnrollments() {
-        Iterable<Enrollment> enrollments = enrollmentRepository.findAll();
+        List<Enrollment> enrollments = enrollmentRepository.findAll();
         return ResponseEntity.ok(enrollments);
     }
 
@@ -62,8 +60,8 @@ public class EnrollmentController {
      * Enroll student to a semester and class.
      *
      * @param semesterId to be enrolled to
-     * @param classId to be enrolled to
-     * @param studentId for enrollment
+     * @param classId    to be enrolled to
+     * @param studentId  for enrollment
      * @return enrollment from db
      */
     @PostMapping("/enrollments/semester/{semesterId}/classes/{classId}/students/{studentId}/enroll")
@@ -117,8 +115,8 @@ public class EnrollmentController {
     public ResponseEntity fetchStudentsByEnrolledClass(@PathVariable("className") String className) {
         Optional<Course> course = courseRepository.findByName(className);
         if (course.isPresent()) {
-            Iterable<Enrollment> enrollments = enrollmentRepository.findAllByCourse(course.get());
-            List<Student> students = StreamSupport.stream(enrollments.spliterator(), true)
+            List<Enrollment> enrollments = enrollmentRepository.findAllByCourse(course.get());
+            List<Student> students = enrollments.stream()
                     .map(Enrollment::getStudent)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(students);

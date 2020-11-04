@@ -1,18 +1,19 @@
 package com.stefanauwyang.blockone.studentenrollment.controllers;
 
-import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Semester;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.SemesterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  * Group of APIs to serve semester related operations.
- *
  */
 @RestController
 public class SemesterController {
@@ -30,7 +31,7 @@ public class SemesterController {
      */
     @GetMapping("/semesters")
     public ResponseEntity semesters() {
-        Iterable<Semester> semesters = semesterRepository.findAll();
+        List<Semester> semesters = semesterRepository.findAll();
         return ResponseEntity.ok(semesters);
     }
 

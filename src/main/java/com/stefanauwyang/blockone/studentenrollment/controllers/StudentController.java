@@ -19,7 +19,6 @@ import java.util.stream.StreamSupport;
 
 /**
  * Group of APIs to serve student related operations.
- *
  */
 @RestController
 public class StudentController {
@@ -52,7 +51,7 @@ public class StudentController {
      * API to modify existing student.
      *
      * @param studentId as id to be modified
-     * @param student as data to be modified
+     * @param student   as data to be modified
      * @return student from db
      */
     @PutMapping("/students/{studentId}")
@@ -110,7 +109,7 @@ public class StudentController {
      */
     @GetMapping("/students/{studentId}/enrollments")
     public ResponseEntity enrollments(@PathVariable("studentId") Long studentId) {
-        Iterable<Enrollment> enrollments = enrollmentRepository.findAllByStudent(Student.builder().id(studentId).build());
+        List<Enrollment> enrollments = enrollmentRepository.findAllByStudent(Student.builder().id(studentId).build());
         return ResponseEntity.ok(enrollments);
     }
 
@@ -122,7 +121,7 @@ public class StudentController {
      */
     @GetMapping("/students/{studentId}/classes")
     public ResponseEntity courses(@PathVariable("studentId") Long studentId) {
-        Iterable<Enrollment> enrollments = enrollmentRepository.findAllByStudent(Student.builder().id(studentId).build());
+        List<Enrollment> enrollments = enrollmentRepository.findAllByStudent(Student.builder().id(studentId).build());
         List<Course> courses = StreamSupport.stream(enrollments.spliterator(), true)
                 .map(enrollment -> courseRepository.findByName(enrollment.getCourse().getName()).orElse(null))
                 .collect(Collectors.toList());
@@ -132,16 +131,16 @@ public class StudentController {
     /**
      * Get student enrolled courses in a semester.
      *
-     * @param studentId as filter
+     * @param studentId  as filter
      * @param semesterId as filter
      * @return courses for the studentId in a semesterId
      */
     @GetMapping("/students/{studentId}/semesters/{semesterId}/classes")
     public ResponseEntity semesters(@PathVariable("studentId") Long studentId,
                                     @PathVariable("semesterId") Long semesterId) {
-        Iterable<Enrollment> enrollments = enrollmentRepository.findAllByStudentOrSemester(Student.builder().id(studentId).build(),
+        List<Enrollment> enrollments = enrollmentRepository.findAllByStudentOrSemester(Student.builder().id(studentId).build(),
                 Semester.builder().id(semesterId).build());
-        List<Course> courses = StreamSupport.stream(enrollments.spliterator(), true)
+        List<Course> courses = enrollments.stream()
                 .map(enrollment -> courseRepository.findById(enrollment.getCourse().getId()).orElse(null))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(courses);
@@ -150,8 +149,8 @@ public class StudentController {
     /**
      * API to list students with filter.
      *
-     * @param firstName as optional filter
-     * @param lastName as optional filter
+     * @param firstName   as optional filter
+     * @param lastName    as optional filter
      * @param nationality as optional filter
      * @return students from db
      */
@@ -162,10 +161,10 @@ public class StudentController {
         if (firstName.isPresent()
                 || lastName.isPresent()
                 || nationality.isPresent()) {
-            Iterable<Student> students = studentRepository.findAllByFirstNameOrLastNameOrNationality(firstName, lastName, nationality);
+            List<Student> students = studentRepository.findAllByFirstNameOrLastNameOrNationality(firstName, lastName, nationality);
             return ResponseEntity.ok(students);
         } else {
-            Iterable<Student> students = studentRepository.findAll();
+            List<Student> students = studentRepository.findAll();
             return ResponseEntity.ok(students);
         }
     }

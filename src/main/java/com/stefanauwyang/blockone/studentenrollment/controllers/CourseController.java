@@ -8,16 +8,17 @@ import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepositor
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Group of APIs to serve class related operations.
- *
  */
 @RestController
 public class CourseController {
@@ -34,14 +35,14 @@ public class CourseController {
     /**
      * API to list classes with or without filter.
      *
-     * @param name as optional filter
+     * @param name   as optional filter
      * @param credit as optional filter
      * @return classes from db
      */
     @GetMapping("/classes")
     public ResponseEntity fetchClasses(@RequestParam(value = "name") Optional<String> name,
                                        @RequestParam(value = "credit") Optional<Integer> credit) {
-        Iterable<Course> courses;
+        List<Course> courses;
         if (name.isPresent()
                 || credit.isPresent()) {
             courses = courseRepository.findAllByNameOrCredit(name, credit);
@@ -63,8 +64,8 @@ public class CourseController {
         if (!db_course.isPresent()) {
             return ResponseEntity.notFound().build();
         } else {
-            Iterable<Enrollment> enrollments = enrollmentRepository.findAllByCourse(db_course.get());
-            List<Student> students = StreamSupport.stream(enrollments.spliterator(), true)
+            List<Enrollment> enrollments = enrollmentRepository.findAllByCourse(db_course.get());
+            List<Student> students = enrollments.stream()
                     .map(Enrollment::getStudent)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(students);
