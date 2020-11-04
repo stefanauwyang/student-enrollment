@@ -2,11 +2,13 @@ package com.stefanauwyang.blockone.studentenrollment.db.models;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * Represents a class which linked to a semester.
- *
  */
 @Entity(name = "class")
 @Data
@@ -21,10 +23,8 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
     private String name;
 
-    @Column
     private Integer credit;
 
 }

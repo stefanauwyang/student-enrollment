@@ -81,8 +81,8 @@ public class CourseController {
      */
     @PostMapping("/classes")
     public ResponseEntity createClass(@RequestBody Course course) {
-        course = courseRepository.save(course);
-        return ResponseEntity.ok(course);
+        Course db_course = courseRepository.save(course);
+        return ResponseEntity.ok(db_course);
     }
 
 }

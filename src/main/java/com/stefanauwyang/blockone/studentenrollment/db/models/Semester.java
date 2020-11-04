@@ -13,6 +13,7 @@ import javax.persistence.*;
 @EqualsAndHashCode
 public class Semester {
 
+    public static final String OPEN = "OPEN";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

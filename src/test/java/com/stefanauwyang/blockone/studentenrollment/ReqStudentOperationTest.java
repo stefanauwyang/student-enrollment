@@ -4,6 +4,7 @@ import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Semester;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -68,6 +72,10 @@ public class ReqStudentOperationTest {
                 Enrollment.class);
 
         System.out.println(enrollment);
+
+        assertNotNull("Enrollment should have id", enrollment.getId());
+
+        assertEquals("Semester id should persisted correctly", semester.getId(), enrollment.getSemester().getId());
     }
 
 }

@@ -71,13 +71,13 @@ public class EnrollmentController {
                                                @PathVariable("classId") Long classId,
                                                @PathVariable("studentId") Long studentId) {
 
-        Optional<Semester> db_semester = semesterRepository.findById(classId);
+        Optional<Semester> db_semester = semesterRepository.findById(semesterId);
 
         // If semester not present, no need to continue
         if (!db_semester.isPresent()) return ResponseEntity.notFound().build();
 
         // Check if semester is open for registration
-        if (!"OPEN".equals(db_semester.get().getStatus())) return ResponseEntity.badRequest().build();
+        if (!Semester.OPEN.equals(db_semester.get().getStatus())) return ResponseEntity.badRequest().build();
 
         Optional<Course> db_course = courseRepository.findById(classId);
 
