@@ -10,6 +10,7 @@ import javax.persistence.*;
  */
 @Entity(name = "class")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
@@ -17,6 +18,7 @@ import javax.persistence.*;
 public class Course {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column

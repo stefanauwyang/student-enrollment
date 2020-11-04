@@ -1,9 +1,9 @@
 package com.stefanauwyang.blockone.studentenrollment;
 
+import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Semester;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
-import com.stefanauwyang.blockone.studentenrollment.utils.TestUtil;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,17 +23,33 @@ public class ReqStudentOperationTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private Student newlyCreatedStudent;
+    private Student student;
+    private Semester semester;
+    private Course course;
 
     @Before
     public void before() {
+
         // Populate student object to send to backend to create
-        Student student = TestUtil.newStudent();
+        student = TestHelper.newStudent();
 
         // Sending student object to be created in backend
-        newlyCreatedStudent = restTemplate.postForObject("http://localhost:" + port + "/students",
+        student = restTemplate.postForObject("http://localhost:" + port + "/students",
                 student,
                 Student.class);
+
+        // Populate semester object to send to backend to create
+        semester = TestHelper.newSemester();
+
+        // Sending semester object to be created in backend
+        semester = restTemplate.postForObject("http://localhost:" + port + "/semesters", semester, Semester.class);
+
+        // Populate class object to send to backend to create
+        course = TestHelper.newCourse();
+
+        // Sending semester object to be created in backend
+        course = restTemplate.postForObject("http://localhost:" + port + "/classes", course, Course.class);
+
     }
 
     /**
@@ -44,7 +60,7 @@ public class ReqStudentOperationTest {
     @Test
     public void studentWillBeAbleToEnrollThemselvesToClassesBeforeTerm() throws Exception {
         String url = "http://localhost:%d/enrollments/semester/%s/classes/%s/students/%s/enroll";
-        String requestUrl = String.format(url, port, 1, 1, newlyCreatedStudent.getId());
+        String requestUrl = String.format(url, port, semester.getId(), course.getId(), student.getId());
 
         Enrollment enrollment = restTemplate.postForObject(
                 requestUrl,

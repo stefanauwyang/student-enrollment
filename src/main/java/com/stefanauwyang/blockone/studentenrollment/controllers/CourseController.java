@@ -2,16 +2,14 @@ package com.stefanauwyang.blockone.studentenrollment.controllers;
 
 import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Semester;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +71,18 @@ public class CourseController {
                 .map(Enrollment::getStudent)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(students);
+    }
+
+    /**
+     * API to create a new class (course).
+     *
+     * @param course to be created
+     * @return course from db
+     */
+    @PostMapping("/classes")
+    public ResponseEntity createClass(@RequestBody Course course) {
+        course = courseRepository.save(course);
+        return ResponseEntity.ok(course);
     }
 
 }
