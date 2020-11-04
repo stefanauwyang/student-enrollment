@@ -2,9 +2,11 @@ package com.stefanauwyang.blockone.studentenrollment.controllers;
 
 import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
+import com.stefanauwyang.blockone.studentenrollment.db.models.Semester;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
+import com.stefanauwyang.blockone.studentenrollment.db.repos.SemesterRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,22 +31,25 @@ public class EnrollmentController {
     private StudentRepository studentRepository;
 
     @Autowired
+    private SemesterRepository semesterRepository;
+
+    @Autowired
     private CourseRepository courseRepository;
 
     @GetMapping("/enrollments")
-    public ResponseEntity enrollments() {
+    public ResponseEntity getEnrollments() {
         Iterable<Enrollment> enrollments = enrollmentRepository.findAll();
         return ResponseEntity.ok(enrollments);
     }
 
     /**
-     * Enroll to a class by student.
+     * Create enrollment record.
      *
      * @param enrollment to be created
      * @return enrollment from db
      */
     @PostMapping("/enrollments")
-    public ResponseEntity enroll(@RequestBody Enrollment enrollment) {
+    public ResponseEntity createEnrollment(@RequestBody Enrollment enrollment) {
         try {
             enrollment = enrollmentRepository.save(enrollment);
             return ResponseEntity.ok(enrollment);
@@ -54,34 +59,44 @@ public class EnrollmentController {
     }
 
     /**
-     * Enroll student to a class.
+     * Enroll student to a semester and class.
      *
-     * @param className to be enrolled by a studentId
-     * @param studentId to be enrolled to a class
+     * @param semesterId to be enrolled to
+     * @param classId to be enrolled to
+     * @param studentId for enrollment
      * @return enrollment from db
      */
-    @PostMapping("/enrollments/classes/{className}/students/{studentId}/enroll")
-    public ResponseEntity enrollStudentToClass(@PathVariable("className") String className,
+    @PostMapping("/enrollments/semester/{semesterId}/classes/{classId}/students/{studentId}/enroll")
+    public ResponseEntity enrollStudentToClass(@PathVariable("semesterId") Long semesterId,
+                                               @PathVariable("classId") Long classId,
                                                @PathVariable("studentId") Long studentId) {
 
-        Optional<Course> db_course = courseRepository.findByName(className);
+        Optional<Semester> db_semester = semesterRepository.findById(classId);
+        Optional<Course> db_course = courseRepository.findById(classId);
         Optional<Student> db_student = studentRepository.findById(studentId);
 
-        if (!db_course.isPresent() || !db_student.isPresent()) {
+        if (!db_semester.isPresent() || !db_course.isPresent() || !db_student.isPresent()) {
+
+            // There is no such semester / course / student
             return ResponseEntity.notFound().build();
+
         } else {
 
-            Optional<Enrollment> db_enrollment = enrollmentRepository.findByCourseAndStudent(db_course.get(), db_student.get());
+            // Check if there is already existing enrollment
+            Optional<Enrollment> db_enrollment = enrollmentRepository.findByStudentAndSemesterAndCourse(db_student.get(), db_semester.get(), db_course.get());
 
             if (db_enrollment.isPresent()) {
 
+                // Enrollment already existing
                 return ResponseEntity.unprocessableEntity().build();
 
             } else {
 
+                // Enroll the student to course in semester
                 Enrollment enrollment = Enrollment.builder()
-                        .course(db_course.get())
                         .student(db_student.get())
+                        .semester(db_semester.get())
+                        .course(db_course.get())
                         .build();
                 enrollment = enrollmentRepository.save(enrollment);
                 return ResponseEntity.ok(enrollment);

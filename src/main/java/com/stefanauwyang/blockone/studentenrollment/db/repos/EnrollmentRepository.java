@@ -16,6 +16,7 @@ public interface EnrollmentRepository extends CrudRepository<Enrollment, Enrollm
     Iterable<Enrollment> findAllByCourse(Course course);
     Iterable<Enrollment> findAllByStudent(Student student);
     Iterable<Enrollment> findAllByStudentOrSemester(Student student, Semester semester);
+    Optional<Enrollment> findByStudentAndSemesterAndCourse(Student student, Semester semester, Course course);
     Optional<Enrollment> findByCourseAndStudent(Course course, Student student);
 
 }
