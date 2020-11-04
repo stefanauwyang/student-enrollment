@@ -48,12 +48,14 @@ public class EnrollmentController {
      */
     @PostMapping("/enrollments")
     public ResponseEntity createEnrollment(@RequestBody Enrollment enrollment) {
+
         try {
             enrollment = enrollmentRepository.save(enrollment);
             return ResponseEntity.ok(enrollment);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+        
     }
 
     /**
@@ -70,60 +72,62 @@ public class EnrollmentController {
                                                @PathVariable("studentId") Long studentId) {
 
         Optional<Semester> db_semester = semesterRepository.findById(classId);
+
+        // If semester not present, no need to continue
+        if (!db_semester.isPresent()) return ResponseEntity.notFound().build();
+
+        // Check if semester is open for registration
+        if (!"OPEN".equals(db_semester.get().getStatus())) return ResponseEntity.badRequest().build();
+
         Optional<Course> db_course = courseRepository.findById(classId);
+
+        // If course not found, no need to continue
+        if (!db_course.isPresent()) return ResponseEntity.notFound().build();
+
         Optional<Student> db_student = studentRepository.findById(studentId);
 
-        if (!db_semester.isPresent() || !db_course.isPresent() || !db_student.isPresent()) {
+        // If student not found, no need to continue
+        if (!db_student.isPresent()) return ResponseEntity.notFound().build();
 
-            // There is no such semester / course / student
-            return ResponseEntity.notFound().build();
+        // Check if there is already existing enrollment
+        Optional<Enrollment> db_enrollment = enrollmentRepository.findByStudentAndSemesterAndCourse(db_student.get(), db_semester.get(), db_course.get());
 
-        } else {
+        // Check if enrollment already existing
+        if (db_enrollment.isPresent()) return ResponseEntity.unprocessableEntity().build();
 
-            // Check if there is already existing enrollment
-            Optional<Enrollment> db_enrollment = enrollmentRepository.findByStudentAndSemesterAndCourse(db_student.get(), db_semester.get(), db_course.get());
-
-            if (db_enrollment.isPresent()) {
-
-                // Enrollment already existing
-                return ResponseEntity.unprocessableEntity().build();
-
-            } else {
-
-                // Enroll the student to course in semester
-                Enrollment enrollment = Enrollment.builder()
-                        .semester(db_semester.get())
-                        .course(db_course.get())
-                        .student(db_student.get())
-                        .build();
-
-                enrollment = enrollmentRepository.save(enrollment);
-                return ResponseEntity.ok(enrollment);
-
-            }
-
-        }
+        // Enroll the student to course in semester
+        Enrollment enrollment = Enrollment.builder()
+                .semester(db_semester.get())
+                .course(db_course.get())
+                .student(db_student.get())
+                .build();
+        enrollment = enrollmentRepository.save(enrollment);
+        return ResponseEntity.ok(enrollment);
 
     }
 
     /**
      * Get list of students enrolled to a class.
      *
-     * @param className as filter
+     * @param classId as filter
      * @return list of students enrolled to given class.
      */
-    @GetMapping("/enrollments/classes/{className}/students")
-    public ResponseEntity fetchStudentsByEnrolledClass(@PathVariable("className") String className) {
-        Optional<Course> course = courseRepository.findByName(className);
-        if (course.isPresent()) {
-            List<Enrollment> enrollments = enrollmentRepository.findAllByCourse(course.get());
-            List<Student> students = enrollments.stream()
-                    .map(Enrollment::getStudent)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(students);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/enrollments/classes/{classId}/students")
+    public ResponseEntity fetchStudentsByEnrolledClass(@PathVariable("classId") Long classId) {
+
+        Optional<Course> course = courseRepository.findById(classId);
+
+        // Check if course not found
+        if (!course.isPresent()) return ResponseEntity.notFound().build();
+
+        // Find all enrollments for a class from db
+        List<Enrollment> enrollments = enrollmentRepository.findAllByCourse(course.get());
+        List<Student> students = enrollments.stream()
+                .map(Enrollment::getStudent)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(students);
+
     }
 
 }

@@ -24,6 +24,4 @@ public class Student {
 
     private String nationality;
 
-    private Boolean full_time = false;
-
 }

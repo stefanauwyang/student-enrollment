@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class StudentOperationTest {
+public class ReqStudentOperationTest {
 
     @LocalServerPort
     private int port;
@@ -46,7 +46,10 @@ public class StudentOperationTest {
         String url = "http://localhost:%d/enrollments/semester/%s/classes/%s/students/%s/enroll";
         String requestUrl = String.format(url, port, 1, 1, newlyCreatedStudent.getId());
 
-        Enrollment enrollment = restTemplate.postForObject(requestUrl, null, Enrollment.class);
+        Enrollment enrollment = restTemplate.postForObject(
+                requestUrl,
+                null,
+                Enrollment.class);
 
         System.out.println(enrollment);
     }
