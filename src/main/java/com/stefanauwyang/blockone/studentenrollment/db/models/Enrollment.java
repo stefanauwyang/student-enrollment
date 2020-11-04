@@ -26,7 +26,6 @@ public class Enrollment implements Serializable {
     @Id
     @ManyToOne
     @JoinColumn(name = "semester_id")
-    @JsonProperty("semester")
     private Semester semester;
 
     @Id

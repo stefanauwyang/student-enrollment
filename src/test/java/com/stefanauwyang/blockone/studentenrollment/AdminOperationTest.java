@@ -1,6 +1,7 @@
 package com.stefanauwyang.blockone.studentenrollment;
 
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
+import com.stefanauwyang.blockone.studentenrollment.utils.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,18 +21,17 @@ public class AdminOperationTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    /**
+     * School administrators can create and modify student records but never delete them.
+     * To allow API remain generic, to prevent deletion should be done in front end.
+     *
+     * @throws Exception
+     */
     @Test
     public void schoolAdministratorCanCreateAndModifyStudentRecord() throws Exception {
 
-        // First name to compare after creation
-        String firstName = "FirstName";
-
         // Populate student object to send to backend to create
-        Student student = Student.builder()
-                .firstName(firstName)
-                .lastName("LastName")
-                .nationality("Nationality")
-                .build();
+        Student student = TestUtil.newStudent();
 
         // Sending student object to be created in backend
         Student newlyCreatedStudent = restTemplate.postForObject("http://localhost:" + port + "/students",
@@ -42,22 +42,29 @@ public class AdminOperationTest {
         Long studentId = newlyCreatedStudent.getId();
 
         Assert.assertNotNull("Student should have ID", studentId);
-        Assert.assertEquals("Student firstName should same with created user firstName",
-                firstName,
-                newlyCreatedStudent.getFirstName());
 
-        // Note the new firstName and set it for modification
-        String newFirstName = "NewFirstName";
-        newlyCreatedStudent.setFirstName(newFirstName);
+        Assert.assertEquals("Student firstName should same with created user firstName",
+                TestUtil.NEW_STUDENT_FIRST_NAME, newlyCreatedStudent.getFirstName());
+
+        Assert.assertEquals("Student lastName should same with created user lastName",
+                TestUtil.NEW_STUDENT_LAST_NAME, newlyCreatedStudent.getLastName());
+
+        Assert.assertEquals("Student nationality should same with created user nationality",
+                TestUtil.NEW_STUDENT_NATIONALITY, newlyCreatedStudent.getNationality());
+
+        // Modify newly created user firstName
+        TestUtil.modifyStudentFirstName(newlyCreatedStudent);
 
         // Trigger modify the student first name
         restTemplate.put("http://localhost:" + port + "/students/" + studentId, newlyCreatedStudent);
 
         // Get the student from backend
-        Student studentFromBackend = restTemplate.getForObject("http://localhost:" + port + "/students/" + studentId,
+        Student modifiedStudent = restTemplate.getForObject("http://localhost:" + port + "/students/" + studentId,
                 Student.class);
 
-        Assert.assertEquals("New first name should be persisted", newFirstName, studentFromBackend.getFirstName());
+        Assert.assertEquals("New firstName should be persisted",
+                TestUtil.NEW_STUDENT_FIRST_NAME_MODIFY, modifiedStudent.getFirstName());
+
 
     }
 
