@@ -11,4 +11,6 @@ public interface CourseRepository extends CrudRepository<Course, Long> {
 
     Optional<Course> findByName(String name);
 
+    Iterable<Course> findAllByNameOrCredit(Optional<String> name, Optional<Integer> credit);
+
 }

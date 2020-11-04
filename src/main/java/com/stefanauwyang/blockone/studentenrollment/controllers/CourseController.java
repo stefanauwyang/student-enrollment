@@ -8,10 +8,7 @@ import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepositor
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,14 +32,23 @@ public class CourseController {
     private EnrollmentRepository enrollmentRepository;
 
     /**
-     * API to list all classes.
+     * API to list classes with or without filter.
      *
-     * @return all classes
+     * @param name as optional filter
+     * @param credit as optional filter
+     * @return classes from db
      */
     @GetMapping("/classes")
-    public ResponseEntity classes() {
-        Iterable<Course> classes = courseRepository.findAll();
-        return ResponseEntity.ok(classes);
+    public ResponseEntity fetchClasses(@RequestParam(value = "name") Optional<String> name,
+                                       @RequestParam(value = "credit") Optional<Integer> credit) {
+        Iterable<Course> courses;
+        if (name.isPresent()
+                || credit.isPresent()) {
+            courses = courseRepository.findAllByNameOrCredit(name, credit);
+        } else {
+            courses = courseRepository.findAll();
+        }
+        return ResponseEntity.ok(courses);
     }
 
     /**

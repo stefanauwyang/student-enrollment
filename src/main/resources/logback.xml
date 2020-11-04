@@ -27,7 +27,7 @@
         <appender-ref ref="console" />
     </logger>
 
-    <root level="error">
+    <root level="debug">
         <appender-ref ref="file"/>
     </root>
 
