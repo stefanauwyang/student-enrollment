@@ -91,16 +91,11 @@ public class EnrollmentController {
             } else {
 
                 // Enroll the student to course in semester
-//                Enrollment enrollment = Enrollment.builder()
-//                        .student(db_student.get())
-//                        .semester(db_semester.get())
-//                        .course(db_course.get())
-//                        .build();
-
-                Enrollment enrollment = new Enrollment();
-                enrollment.setStudent(db_student.get());
-                enrollment.setSemester(db_semester.get());
-                enrollment.setCourse(db_course.get());
+                Enrollment enrollment = Enrollment.builder()
+                        .semester(db_semester.get())
+                        .course(db_course.get())
+                        .student(db_student.get())
+                        .build();
 
                 enrollment = enrollmentRepository.save(enrollment);
                 return ResponseEntity.ok(enrollment);

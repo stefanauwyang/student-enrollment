@@ -1,6 +1,6 @@
 package com.stefanauwyang.blockone.studentenrollment.db.models;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -10,12 +10,18 @@ import javax.persistence.*;
  */
 @Entity(name = "class")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class Course {
 
     @Id
     private Long id;
+
     @Column
     private String name;
+
     @Column
     private Integer credit;
 

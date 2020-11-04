@@ -1,12 +1,12 @@
-DROP TABLE IF EXISTS student;
-
-CREATE TABLE student (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  first_name VARCHAR(250) NOT NULL,
-  last_name VARCHAR(250) DEFAULT NULL,
-  nationality VARCHAR(100) DEFAULT NULL,
-  full_time BOOLEAN DEFAULT FALSE
-);
+--DROP TABLE IF EXISTS student;
+--
+--CREATE TABLE student (
+--  id INT AUTO_INCREMENT PRIMARY KEY,
+--  first_name VARCHAR(250) NOT NULL,
+--  last_name VARCHAR(250) DEFAULT NULL,
+--  nationality VARCHAR(100) DEFAULT NULL,
+--  full_time BOOLEAN DEFAULT FALSE
+--);
 
 INSERT INTO student (id, first_name, last_name, nationality) VALUES
   (1, 'Michael', 'Wong', 'Malaysia'),
@@ -16,13 +16,13 @@ INSERT INTO student (id, first_name, last_name, nationality) VALUES
 
 -------------------------------------------------------------------
 
-DROP TABLE IF EXISTS semester;
-
-CREATE TABLE semester (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(250) NOT NULL UNIQUE,
-  status VARCHAR(15) DEFAULT 'OPEN'
-);
+--DROP TABLE IF EXISTS semester;
+--
+--CREATE TABLE semester (
+--  id INT AUTO_INCREMENT PRIMARY KEY,
+--  name VARCHAR(250) NOT NULL UNIQUE,
+--  status VARCHAR(15) DEFAULT 'OPEN'
+--);
 
 INSERT INTO semester (id, name, status) VALUES
   (1, '2017-1', 'CLOSED'),
@@ -38,13 +38,14 @@ INSERT INTO semester (id, name, status) VALUES
 
 -------------------------------------------------------------------
 
-DROP TABLE IF EXISTS class;
-
-CREATE TABLE class (
-  id INT PRIMARY KEY,
-  name VARCHAR(250) NOT NULL,
-  credit INT
-);
+--DROP TABLE IF EXISTS class;
+--
+--CREATE TABLE class (
+--  id INT PRIMARY KEY,
+--  name VARCHAR(250) NOT NULL,
+--  credit INT,
+--  semester_id INT
+--);
 
 INSERT INTO class (id, name, credit) VALUES
   (1, 'Introduction to Computational Thinking', 3),
@@ -95,13 +96,13 @@ INSERT INTO class (id, name, credit) VALUES
 
 -------------------------------------------------------------------
 
-DROP TABLE IF EXISTS enrollment;
-
-CREATE TABLE enrollment (
-  student_id INT NOT NULL,
-  semester_id INT NOT NULL,
-  class_id INT NOT NULL
-);
+--DROP TABLE IF EXISTS enrollment;
+--
+--CREATE TABLE enrollment (
+--  student_id INT NOT NULL,
+--  semester_id INT NOT NULL,
+--  class_id INT NOT NULL
+--);
 
 INSERT INTO enrollment (student_id, semester_id, class_id) VALUES
   (1, 1, 1),
