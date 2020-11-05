@@ -28,4 +28,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
                                                               Optional<Long> semesterId,
                                                               Optional<Long> courseId);
 
+    List<Enrollment> findAllByStudentIdAndSemesterId(Long studentId, Long semesterId);
+
 }

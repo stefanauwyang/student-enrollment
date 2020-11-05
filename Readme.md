@@ -8,7 +8,8 @@ REST API class enrollment system built using Javba, Spring Boot, H2 in memory da
 ![](misc/Dev-Env-Setup-Lombok.png)
 
 ## Important guidelines
-1. This application developed using lombok to auto generate setter getter. You may need lombok plugin in your editor.
+1. This application developed using lombok for cleaner code (e.g. auto generate setter getter). 
+You need lombok plug-in in your editor if not yet installed.
 2. To build and run application: mvn spring-boot:run
 3. To generate documentation run: mvn javadoc:javadoc
 4. Test cases created to cover code align with requirement
@@ -26,6 +27,12 @@ Class and Course are used interchange in the code, but API interface always use 
 ## Constraints:
 1. School administrators can create and modify student records but never delete them.
 API designed for generic use. Hence, access control and design decision not to allow deletion controlled in Front End.
+2. Students will be able to enroll themselves into classes before each term.
+API designed for generic use. Hence, access control and design decision to allow student to enroll himself
+controlled in Front End.
+3. Each class a fixed credit/unit. Some harder classes might be 4 credits while easier ones could be 2 or 3 credits.
+4. ach student is only allowed to be enrolled in a maximum of 20 credits for each semester.  
+There is a minimum of 10 credits to be considered full time.
 
 ### Create student
 Request: POST /students
@@ -65,10 +72,6 @@ Response
     "nationality": "Malaysia"
 }
 ```
-
-2. Students will be able to enroll themselves into classes before each term.
-API designed for generic use. Hence, access control and design decision to allow student to enroll himself
-controlled in Front End.
 
 ### Enroll student to a class in a semester
 Request: POST /enrollments
@@ -409,6 +412,8 @@ Response:
 ```
 
 Request: GET /classes?name=computing
+
+Response:
 ```json
 [
   {

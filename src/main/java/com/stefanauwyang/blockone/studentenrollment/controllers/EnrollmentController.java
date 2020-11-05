@@ -8,6 +8,7 @@ import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.SemesterRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
+import com.stefanauwyang.blockone.studentenrollment.exceptions.CreditException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,14 +43,9 @@ public class EnrollmentController {
      */
     @PostMapping("/enrollments")
     public ResponseEntity createEnrollment(@RequestBody Enrollment enrollment) {
-
-        try {
-            enrollment = enrollmentRepository.save(enrollment);
-            return ResponseEntity.ok(enrollment);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-
+        return enrollStudentToClass(enrollment.getSemester().getId(),
+                enrollment.getCourse().getId(),
+                enrollment.getStudent().getId());
     }
 
     /**
@@ -95,6 +91,20 @@ public class EnrollmentController {
                 .course(db_course.get())
                 .student(db_student.get())
                 .build();
+
+        // Validate credits. Fetch enrollments from db where student_id , and semester_id
+        List<Enrollment> enrollments = enrollmentRepository.findAllByStudentIdAndSemesterId(enrollment.getStudent().getId(),
+                enrollment.getSemester().getId());
+
+        // Calculate credits if enrolled
+        int sum = enrollments.stream()
+                .mapToInt(e -> e.getCourse().getCredit())
+                .sum();
+        sum += db_course.get().getCredit();
+
+        // If max credit reached, throw exception
+        if (sum > 20) throw new CreditException("Credit exceed maximum enroll credits 20 per semester");
+
         enrollment = enrollmentRepository.save(enrollment);
         return ResponseEntity.ok(enrollment);
 
