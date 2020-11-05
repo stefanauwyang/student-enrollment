@@ -74,17 +74,14 @@ public class ReqStudentOperationTest {
     @Test
     public void studentWillBeAbleToEnrollThemselvesToClassesBeforeTerm() throws Exception {
 
-        String url = "http://localhost:%d/enrollments/semester/%s/classes/%s/students/%s/enroll";
-        String requestUrl = String.format(url, port, openSemester.getId(), course.getId(), student.getId());
+        String url = "http://localhost:%d/enrollments";
+        String requestUrl = String.format(url, port);
 
-//        String url = "http://localhost:%d/enrollments";
-//        String requestUrl = String.format(url, port);
-
-//        enrollment = Enrollment.builder()
-//                .course(course)
-//                .semester(openSemester)
-//                .student(student)
-//                .build();
+        enrollment = Enrollment.builder()
+                .course(course)
+                .semester(openSemester)
+                .student(student)
+                .build();
 
         enrollment = restTemplate.postForObject(
                 requestUrl,

@@ -53,7 +53,7 @@ public class EnrollmentController {
     }
 
     /**
-     * Enroll student to a semester and class.
+     * Enroll student to a semester and class without sending request body in payload.
      *
      * @param semesterId to be enrolled to
      * @param classId    to be enrolled to
@@ -100,10 +100,22 @@ public class EnrollmentController {
 
     }
 
+    /**
+     * API to delete enrollment.
+     *
+     * @param enrollmentId to delete
+     * @return deleted enrollmentId
+     */
     @DeleteMapping("/enrollments/{enrollmentId}")
     public ResponseEntity deleteEnrollment(@PathVariable("enrollmentId") Long enrollmentId) {
-        enrollmentRepository.deleteById(enrollmentId);
-        return ResponseEntity.noContent().build();
+        Optional<Enrollment> db_enrollment = enrollmentRepository.findById(enrollmentId);
+        if (db_enrollment.isPresent()) {
+            Enrollment enrollment = db_enrollment.get();
+            enrollmentRepository.delete(enrollment);
+            return ResponseEntity.ok(enrollmentId);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**

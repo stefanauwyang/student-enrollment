@@ -71,7 +71,7 @@ public class StudentController {
      * API to delete existing student.
      *
      * @param studentId to be deleted
-     * @return student deleted from db
+     * @return deleted studentId
      */
     @DeleteMapping("/students/{studentId}")
     public ResponseEntity deleteStudent(@PathVariable("studentId") Long studentId) {
@@ -79,7 +79,7 @@ public class StudentController {
         if (db_student.isPresent()) {
             Student student = db_student.get();
             studentRepository.delete(student);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(studentId);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -108,7 +108,7 @@ public class StudentController {
      * @return enrollments for the student
      */
     @GetMapping("/students/{studentId}/enrollments")
-    public ResponseEntity enrollments(@PathVariable("studentId") Long studentId) {
+    public ResponseEntity enrollmentsOfStudentId(@PathVariable("studentId") Long studentId) {
         List<Enrollment> enrollments = enrollmentRepository.findAllByStudent(Student.builder().id(studentId).build());
         return ResponseEntity.ok(enrollments);
     }
@@ -120,7 +120,7 @@ public class StudentController {
      * @return courses enrolled for the studentId
      */
     @GetMapping("/students/{studentId}/classes")
-    public ResponseEntity courses(@PathVariable("studentId") Long studentId) {
+    public ResponseEntity coursesOfStudentId(@PathVariable("studentId") Long studentId) {
         List<Enrollment> enrollments = enrollmentRepository.findAllByStudent(Student.builder().id(studentId).build());
         List<Course> courses = StreamSupport.stream(enrollments.spliterator(), true)
                 .map(enrollment -> courseRepository.findByName(enrollment.getCourse().getName()).orElse(null))
@@ -136,7 +136,7 @@ public class StudentController {
      * @return courses for the studentId in a semesterId
      */
     @GetMapping("/students/{studentId}/semesters/{semesterId}/classes")
-    public ResponseEntity semesters(@PathVariable("studentId") Long studentId,
+    public ResponseEntity classesOfStudentIdInSemesterId(@PathVariable("studentId") Long studentId,
                                     @PathVariable("semesterId") Long semesterId) {
         List<Enrollment> enrollments = enrollmentRepository.findAllByStudentOrSemester(Student.builder().id(studentId).build(),
                 Semester.builder().id(semesterId).build());

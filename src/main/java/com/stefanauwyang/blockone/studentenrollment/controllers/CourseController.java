@@ -65,7 +65,7 @@ public class CourseController {
      * API to delete existing class (course).
      *
      * @param classId to be deleted
-     * @return student deleted from db
+     * @return deleted classId
      */
     @DeleteMapping("/classes/{classId}")
     public ResponseEntity deleteCourse(@PathVariable("classId") Long classId) {
@@ -73,7 +73,7 @@ public class CourseController {
         if (db_course.isPresent()) {
             Course course = db_course.get();
             courseRepository.delete(course);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(classId);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -106,7 +106,7 @@ public class CourseController {
      * @return list of enrolled students
      */
     @GetMapping("/classes/{classId}/students")
-    public ResponseEntity classStudents(@PathVariable("classId") Long classId) {
+    public ResponseEntity studentsInClassId(@PathVariable("classId") Long classId) {
 
         // Find if class exists
         Optional<Course> db_course = courseRepository.findById(classId);

@@ -36,13 +36,13 @@ public class SemesterController {
     }
 
     /**
-     * API to modify existing class (course).
+     * API to modify existing semesters.
      *
      * @param semesterId as id to be modified
      * @param semester   as data to be modified
      * @return semester from db
      */
-    @PutMapping("/classes/{classId}")
+    @PutMapping("/semesters/{semesterId}")
     public ResponseEntity modifySemester(@PathVariable("semesterId") Long semesterId,
                                          @RequestBody Semester semester) {
         Optional<Semester> db_semester = semesterRepository.findById(semesterId);
@@ -59,7 +59,7 @@ public class SemesterController {
      * API to delete existing semester.
      *
      * @param semesterId to be deleted
-     * @return semester deleted from db
+     * @return deleted semesterId
      */
     @DeleteMapping("/semesters/{semesterId}")
     public ResponseEntity deleteSemester(@PathVariable("semesterId") Long semesterId) {
@@ -67,7 +67,7 @@ public class SemesterController {
         if (db_semester.isPresent()) {
             Semester semester = db_semester.get();
             semesterRepository.delete(semester);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(semesterId);
         } else {
             return ResponseEntity.notFound().build();
         }
