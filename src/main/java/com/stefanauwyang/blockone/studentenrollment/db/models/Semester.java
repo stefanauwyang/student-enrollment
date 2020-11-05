@@ -23,10 +23,10 @@ public class Semester {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(length = 250, nullable = false, unique = true)
     private String name;
 
-    @Column
+    @Column(length = 20)
     private String status;
 
 }

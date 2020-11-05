@@ -4,7 +4,7 @@ REST API class enrollment system built using Javba, Spring Boot, H2 in memory da
 ## Development requirement
 1. JDK 1.8 or above
 2. IntellJ/Eclipse editor with Lombok plug-in
-![](images/Dev-Env-Setup-Lombok.png)
+![](misc/Dev-Env-Setup-Lombok.png)
 
 ## Important guidelines
 1. This application developed using lombok to auto generate setter getter. You may need lombok plugin in your editor.
@@ -13,13 +13,7 @@ REST API class enrollment system built using Javba, Spring Boot, H2 in memory da
 4. Test cases created to cover code align with requirement
 
 ## Database Structure
-### Student Table Structure
-
-### Class Table Structure
-
-### Semester Table Structure
-
-### Enrollment Table Structure
+![](misc/entities.png)
 
 APIs:
 - API to add new students or modify them -> POST: /students

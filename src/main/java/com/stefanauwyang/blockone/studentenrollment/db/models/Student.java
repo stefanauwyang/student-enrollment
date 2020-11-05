@@ -20,11 +20,13 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(length = 250, nullable = false)
     private String firstName;
 
+    @Column(length = 250)
     private String lastName;
 
+    @Column(length = 100)
     private String nationality;
 
 }

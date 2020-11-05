@@ -1,0 +1,37 @@
+@startuml
+
+entity "enrollment" as e01 {
+  *id : int <<generated>>
+  --
+  *student_id : int <<FK>>
+  *semester_id : int <<FK>>
+  *class_id : int <<FK>>
+}
+
+entity "student" as e02 {
+  *id : int <<generated>>
+  --
+  *first_name : varchar(250)
+  last_name : varchar(250)
+  nationality : varchar(100)
+}
+
+entity "semester" as e03 {
+  *id : int <<generated>>
+  --
+  name : varchar(250)
+  status : varchar(20)
+}
+
+entity "course" as e04 {
+  *id : int <<generated>>
+  --
+  name : varchar(250)
+  credit : int
+}
+
+e01 }o..|| e02
+e01 }o..|| e03
+e01 }o..|| e04
+
+@enduml

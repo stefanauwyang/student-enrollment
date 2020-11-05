@@ -2,10 +2,7 @@ package com.stefanauwyang.blockone.studentenrollment.db.models;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Represents a class (or a course)
@@ -23,6 +20,7 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 250)
     private String name;
 
     private Integer credit;
