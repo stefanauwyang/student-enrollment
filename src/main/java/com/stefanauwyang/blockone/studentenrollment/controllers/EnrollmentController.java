@@ -34,12 +34,6 @@ public class EnrollmentController {
     @Autowired
     private CourseRepository courseRepository;
 
-    @GetMapping("/enrollments")
-    public ResponseEntity getEnrollments() {
-        List<Enrollment> enrollments = enrollmentRepository.findAll();
-        return ResponseEntity.ok(enrollments);
-    }
-
     /**
      * Create enrollment record.
      *
@@ -103,6 +97,40 @@ public class EnrollmentController {
                 .build();
         enrollment = enrollmentRepository.save(enrollment);
         return ResponseEntity.ok(enrollment);
+
+    }
+
+    @DeleteMapping("/enrollments/{enrollmentId}")
+    public ResponseEntity deleteEnrollment(@PathVariable("enrollmentId") Long enrollmentId) {
+        enrollmentRepository.deleteById(enrollmentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * API to list enrollments with filter.
+     *
+     * @param student_id  as optional filter
+     * @param semester_id as optional filter
+     * @param class_id    as optional filter
+     * @return enrollments from db
+     */
+    @GetMapping("/enrollments")
+    public ResponseEntity fetchStudents(@RequestParam(value = "student_id") Optional<Long> student_id,
+                                        @RequestParam(value = "semester_id") Optional<Long> semester_id,
+                                        @RequestParam(value = "class_id") Optional<Long> class_id) {
+
+        List<Enrollment> enrollments;
+
+        if (student_id.isPresent() || semester_id.isPresent() || class_id.isPresent()) {
+            enrollments = enrollmentRepository.findAllByStudentIdOrSemesterIdOrCourseId(
+                    student_id,
+                    semester_id,
+                    class_id);
+        } else {
+            enrollments = enrollmentRepository.findAll();
+        }
+
+        return ResponseEntity.ok(enrollments);
 
     }
 

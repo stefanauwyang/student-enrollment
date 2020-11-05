@@ -11,8 +11,10 @@ public class TestHelper {
     public static final String NEW_STUDENT_LAST_NAME = "Neo";
     public static final String NEW_STUDENT_NATIONALITY = "Singapore";
 
-    public static final String NEW_SEMESTER_NAME = "2999-1";
-    public static final String NEW_SEMESTER_STATUS = "OPEN";
+    public static final String NEW_CLOSED_SEMESTER_NAME = "2999-1";
+    public static final String NEW_CLOSED_SEMESTER_STATUS = "CLOSED";
+    public static final String NEW_OPEN_SEMESTER_NAME = "2999-2";
+    public static final String NEW_OPEN_SEMESTER_STATUS = "OPEN";
 
     public static final String NEW_COURSE_NAME = "Test course name";
     public static final Integer NEW_COURSE_CREDIT = 4;
@@ -44,10 +46,22 @@ public class TestHelper {
      *
      * @return new semester test object
      */
-    public static Semester newSemester() {
+    public static Semester newOpenSemester() {
         return Semester.builder()
-                .name(NEW_SEMESTER_NAME)
-                .status(NEW_SEMESTER_STATUS)
+                .name(NEW_OPEN_SEMESTER_NAME)
+                .status(NEW_OPEN_SEMESTER_STATUS)
+                .build();
+    }
+
+    /**
+     * Create new semester test object and return it.
+     *
+     * @return new semester test object
+     */
+    public static Semester newClosedSemester() {
+        return Semester.builder()
+                .name(NEW_CLOSED_SEMESTER_NAME)
+                .status(NEW_CLOSED_SEMESTER_STATUS)
                 .build();
     }
 

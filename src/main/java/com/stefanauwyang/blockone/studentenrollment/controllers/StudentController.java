@@ -79,7 +79,7 @@ public class StudentController {
         if (db_student.isPresent()) {
             Student student = db_student.get();
             studentRepository.delete(student);
-            return ResponseEntity.ok(student);
+            return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
         }

@@ -23,6 +23,57 @@ public class SemesterController {
     private CourseRepository courseRepository;
 
     /**
+     * API to create a new semester.
+     * This API should be used by an administrator.
+     *
+     * @param semester to be created
+     * @return semester from db
+     */
+    @PostMapping("/semesters")
+    public ResponseEntity createSemester(@RequestBody Semester semester) {
+        semester = semesterRepository.save(semester);
+        return ResponseEntity.ok(semester);
+    }
+
+    /**
+     * API to modify existing class (course).
+     *
+     * @param semesterId as id to be modified
+     * @param semester   as data to be modified
+     * @return semester from db
+     */
+    @PutMapping("/classes/{classId}")
+    public ResponseEntity modifySemester(@PathVariable("semesterId") Long semesterId,
+                                         @RequestBody Semester semester) {
+        Optional<Semester> db_semester = semesterRepository.findById(semesterId);
+        if (db_semester.isPresent()) {
+            semester.setId(semesterId);
+            semester = semesterRepository.save(semester);
+            return ResponseEntity.ok(semester);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * API to delete existing semester.
+     *
+     * @param semesterId to be deleted
+     * @return semester deleted from db
+     */
+    @DeleteMapping("/semesters/{semesterId}")
+    public ResponseEntity deleteSemester(@PathVariable("semesterId") Long semesterId) {
+        Optional<Semester> db_semester = semesterRepository.findById(semesterId);
+        if (db_semester.isPresent()) {
+            Semester semester = db_semester.get();
+            semesterRepository.delete(semester);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
      * API to list all semesters.
      *
      * @param id     as optional filter
@@ -45,19 +96,6 @@ public class SemesterController {
 
         return ResponseEntity.ok(semesters);
 
-    }
-
-    /**
-     * API to create a new semester.
-     * This API should be used by an administrator.
-     *
-     * @param semester to be created
-     * @return semester from db
-     */
-    @PostMapping("/semesters")
-    public ResponseEntity createSemester(@RequestBody Semester semester) {
-        semester = semesterRepository.save(semester);
-        return ResponseEntity.ok(semester);
     }
 
 }

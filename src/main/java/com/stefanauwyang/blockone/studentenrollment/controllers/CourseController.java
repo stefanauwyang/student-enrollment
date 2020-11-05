@@ -2,7 +2,6 @@ package com.stefanauwyang.blockone.studentenrollment.controllers;
 
 import com.stefanauwyang.blockone.studentenrollment.db.models.Course;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Enrollment;
-import com.stefanauwyang.blockone.studentenrollment.db.models.Semester;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
@@ -29,6 +28,56 @@ public class CourseController {
 
     @Autowired
     private EnrollmentRepository enrollmentRepository;
+
+    /**
+     * API to create a new class (course).
+     *
+     * @param course to be created
+     * @return course from db
+     */
+    @PostMapping("/classes")
+    public ResponseEntity createClass(@RequestBody Course course) {
+        Course db_course = courseRepository.save(course);
+        return ResponseEntity.ok(db_course);
+    }
+
+    /**
+     * API to modify existing class (course).
+     *
+     * @param classId as id to be modified
+     * @param course  as data to be modified
+     * @return course from db
+     */
+    @PutMapping("/classes/{classId}")
+    public ResponseEntity modifyClass(@PathVariable("classId") Long classId,
+                                      @RequestBody Course course) {
+        Optional<Course> db_course = courseRepository.findById(classId);
+        if (db_course.isPresent()) {
+            course.setId(classId);
+            course = courseRepository.save(course);
+            return ResponseEntity.ok(course);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * API to delete existing class (course).
+     *
+     * @param classId to be deleted
+     * @return student deleted from db
+     */
+    @DeleteMapping("/classes/{classId}")
+    public ResponseEntity deleteCourse(@PathVariable("classId") Long classId) {
+        Optional<Course> db_course = courseRepository.findById(classId);
+        if (db_course.isPresent()) {
+            Course course = db_course.get();
+            courseRepository.delete(course);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     /**
      * API to list classes with or without filter.
@@ -71,18 +120,6 @@ public class CourseController {
                 .map(Enrollment::getStudent)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(students);
-    }
-
-    /**
-     * API to create a new class (course).
-     *
-     * @param course to be created
-     * @return course from db
-     */
-    @PostMapping("/classes")
-    public ResponseEntity createClass(@RequestBody Course course) {
-        Course db_course = courseRepository.save(course);
-        return ResponseEntity.ok(db_course);
     }
 
 }

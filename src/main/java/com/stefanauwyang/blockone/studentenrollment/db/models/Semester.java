@@ -14,6 +14,8 @@ import javax.persistence.*;
 public class Semester {
 
     public static final String OPEN = "OPEN";
+    public static final String CLOSED = "CLOSED";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
