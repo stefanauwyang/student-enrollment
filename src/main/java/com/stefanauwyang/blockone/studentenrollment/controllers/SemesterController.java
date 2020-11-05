@@ -89,7 +89,7 @@ public class SemesterController {
         List<Semester> semesters;
 
         if (id.isPresent() || name.isPresent() || status.isPresent()) {
-            semesters = semesterRepository.findAllByIdOrNameOrStatus(id, name, status);
+            semesters = semesterRepository.findAllByIdOrNameIgnoreCaseOrStatusIgnoreCase(id, name, status);
         } else {
             semesters = semesterRepository.findAll();
         }

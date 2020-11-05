@@ -13,6 +13,6 @@ import java.util.Optional;
 @Repository
 public interface SemesterRepository extends JpaRepository<Semester, Long> {
 
-    List<Semester> findAllByIdOrNameOrStatus(Optional<Long> id, Optional<String> name, Optional<String> status);
+    List<Semester> findAllByIdOrNameIgnoreCaseOrStatusIgnoreCase(Optional<Long> id, Optional<String> name, Optional<String> status);
 
 }

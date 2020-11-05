@@ -164,7 +164,7 @@ public class StudentController {
         List<Student> students;
 
         if (id.isPresent() || firstName.isPresent() || lastName.isPresent() || nationality.isPresent()) {
-            students = studentRepository.findAllByIdOrFirstNameOrLastNameOrNationality(id, firstName, lastName, nationality);
+            students = studentRepository.findAllByIdOrFirstNameIgnoreCaseOrLastNameIgnoreCaseOrNationalityIgnoreCase(id, firstName, lastName, nationality);
         } else {
             students = studentRepository.findAll();
         }

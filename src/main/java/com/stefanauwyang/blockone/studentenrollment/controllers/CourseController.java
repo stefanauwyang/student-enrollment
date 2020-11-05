@@ -92,7 +92,7 @@ public class CourseController {
         List<Course> courses;
         if (name.isPresent()
                 || credit.isPresent()) {
-            courses = courseRepository.findAllByNameOrCredit(name, credit);
+            courses = courseRepository.findAllByNameContainingIgnoreCaseOrCredit(name, credit);
         } else {
             courses = courseRepository.findAll();
         }

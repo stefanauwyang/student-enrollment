@@ -12,7 +12,7 @@ INSERT INTO student (id, first_name, last_name, nationality) VALUES
   (1, 'Michael', 'Wong', 'Malaysia'),
   (2, 'Sylvia', 'Lim', 'Singapore'),
   (3, 'Anastasia', 'Potter', 'Indonesia'),
-  (4, 'James', 'Bond', 'U.S.A');
+  (4, 'James', 'Lim', 'U.S.A');
 
 -------------------------------------------------------------------
 

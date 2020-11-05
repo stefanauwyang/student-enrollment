@@ -89,87 +89,78 @@ Response:
 }
 ```
 
-Both student_id, semester_id and client_id can be obtained by these APIs
-
-### Students
-Request: GET /students
+### Enroll student to a class in a semester without request body
+Request: POST /enrollments/semesters/4/classes/7/students/2/enroll
 
 Response:
 ```json
-[
-    {
-        "id": 1,
-        "firstName": "Michael",
-        "lastName": "Wong",
-        "nationality": "Malaysia"
-    },
-    {
-        "id": 2,
-        "firstName": "Sylvia",
-        "lastName": "Lim",
-        "nationality": "Singapore"
-    },
-    {
-        "id": 3,
-        "firstName": "Anastasia",
-        "lastName": "Potter",
-        "nationality": "Indonesia"
-    },
-    {
-        "id": 4,
-        "firstName": "James",
-        "lastName": "Bond",
-        "nationality": "U.S.A"
-    }
-]
+{
+    "id": 1,
+    "student_id": 2,
+    "semester_id": 4,
+    "class_id": 7
+}
 ```
 
-### Semesters
-Request: GET /semesters
+### Obtaining Student Data
+Request: GET /students
 
 Response:
 ```json
 [
   {
     "id": 1,
-    "name": "2017-1",
-    "status": "CLOSED"
+    "nationality": "Malaysia",
+    "first_name": "Michael",
+    "last_name": "Wong"
   },
   {
     "id": 2,
-    "name": "2017-2",
-    "status": "CLOSED"
+    "nationality": "Singapore",
+    "first_name": "Sylvia",
+    "last_name": "Lim"
   },
   {
     "id": 3,
-    "name": "2018-1",
-    "status": "CLOSED"
+    "nationality": "Indonesia",
+    "first_name": "Anastasia",
+    "last_name": "Potter"
   },
   {
     "id": 4,
-    "name": "2018-2",
-    "status": "CLOSED"
+    "nationality": "U.S.A",
+    "first_name": "James",
+    "last_name": "Lim"
+  }
+]
+```
+
+Request: GET /students?last_name=lim
+
+Response:
+```json
+[
+  {
+    "id": 2,
+    "nationality": "Singapore",
+    "first_name": "Sylvia",
+    "last_name": "Lim"
   },
   {
-    "id": 5,
-    "name": "2019-1",
-    "status": "CLOSED"
-  },
-  {
-    "id": 6,
-    "name": "2019-2",
-    "status": "CLOSED"
-  },
-  {
-    "id": 7,
-    "name": "2020-1",
-    "status": "CLOSED"
-  },
-  {
-    "id": 8,
-    "name": "2020-2",
-    "status": "ACTIVE"
-  },
+    "id": 4,
+    "nationality": "U.S.A",
+    "first_name": "James",
+    "last_name": "Lim"
+  }
+]
+```
+
+### Obtaining Semester Data
+Request: GET /semesters?status=open
+
+Response:
+```json
+[
   {
     "id": 9,
     "name": "2021-1",
@@ -183,7 +174,7 @@ Response:
 ]
 ```
 
-### Classes
+### Obtaining Class Data
 Request: GET /classes
 
 Response:
@@ -412,6 +403,27 @@ Response:
   {
     "id": 45,
     "name": "Data Science for Business",
+    "credit": 3
+  }
+]
+```
+
+Request: GET /classes?name=computing
+```json
+[
+  {
+    "id": 7,
+    "name": "Physics for Computing",
+    "credit": 2
+  },
+  {
+    "id": 19,
+    "name": "Net Centric Computing",
+    "credit": 3
+  },
+  {
+    "id": 38,
+    "name": "Time‐Critical Computing",
     "credit": 3
   }
 ]

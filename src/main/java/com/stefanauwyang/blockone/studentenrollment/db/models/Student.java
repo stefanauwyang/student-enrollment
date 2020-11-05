@@ -1,5 +1,6 @@
 package com.stefanauwyang.blockone.studentenrollment.db.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,9 +22,11 @@ public class Student {
     private Long id;
 
     @Column(length = 250, nullable = false)
+    @JsonProperty("first_name")
     private String firstName;
 
     @Column(length = 250)
+    @JsonProperty("last_name")
     private String lastName;
 
     @Column(length = 100)

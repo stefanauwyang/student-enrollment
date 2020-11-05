@@ -16,6 +16,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     Optional<Course> findByName(String name);
 
-    List<Course> findAllByNameOrCredit(Optional<String> name, Optional<Integer> credit);
+    List<Course> findAllByNameContainingIgnoreCaseOrCredit(Optional<String> name, Optional<Integer> credit);
 
 }
