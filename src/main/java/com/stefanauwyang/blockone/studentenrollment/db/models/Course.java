@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * Represents a class which linked to a semester.
+ * Represents a class (or a course)
  */
 @Entity(name = "class")
 @Data

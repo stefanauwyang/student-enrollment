@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Database repository access for student table.
+ */
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
 

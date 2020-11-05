@@ -4,6 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * Represent a student which can be enrolled to a class in a semester.
+ */
 @Entity
 @Data
 @Builder

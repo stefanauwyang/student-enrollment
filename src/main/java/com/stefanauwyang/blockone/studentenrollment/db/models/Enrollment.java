@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * Represents enrollment registration between student, class and semester.
+ */
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"student_id", "semester_id", "class_id"}))
 @Data

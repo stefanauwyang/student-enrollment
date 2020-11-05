@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Database repository access for enrollment table.
+ */
 @Repository
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 

@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Datbase repository access to semester table.
+ */
 @Repository
 public interface SemesterRepository extends JpaRepository<Semester, Long> {
 
