@@ -15,6 +15,37 @@ REST API class enrollment system built using Javba, Spring Boot, H2 in memory da
 ## Database Structure
 ![](misc/entities.png)
 
+## Requirement
+1. The users of the system will consist of both school administrators and students.
+2. School administrators will create student identities
+3. Students will be able to enroll themselves into classes before each semester.
+
+## Constraints:
+1. School administrators can create and modify student records but never delete them.
+API designed for generic use. Hence, access control and design decision not to allow deletion controlled in Front End.
+
+### Create student
+POST /students
+```json
+{
+    "id": 1,
+    "firstName": "Mike",
+    "lastName": "Wong",
+    "nationality": "Myanmar"
+}
+```
+
+### Modify student
+PUT /students
+```json
+{
+    "id": 1,
+    "firstName": "Michael",
+    "lastName": "Wong",
+    "nationality": "Malaysia"
+}
+```
+
 APIs:
 - API to add new students or modify them -> POST: /students
 - API to create a new semester -> POST: /semesters
