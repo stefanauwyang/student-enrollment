@@ -1,6 +1,6 @@
 [
   {
-    "name": "student-enrollment-app",
+    "name": "student-enrollment-container",
     "imageUri": "421904971359.dkr.ecr.us-east-1.amazonaws.com/student-enrollment:latest"
   }
 ]
