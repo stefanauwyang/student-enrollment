@@ -12,6 +12,8 @@ phases:
       - echo Building project...
       - echo Build started on `date`
       - mvn package
+      - docker build -t stefanauwyang/student-enrollment-image .
+      - docker push stefanauwyang/student-enrollment-image
   post_build:
     commands:
       - echo Build completed on `date`
