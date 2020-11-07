@@ -4,17 +4,22 @@ phases:
   install:
     runtime-versions:
       java: corretto8
-      docker: 18
+      docker: 19
     commands:
       - echo Checking java version...
       - java -version
+  pre_build:
+    commands:
+      - $(aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 421904971359.dkr.ecr.us-east-1.amazonaws.com)
+      - docker pull $CONTAINER_REPOSITORY_URL:$TAG_NAME || true
   build:
     commands:
       - echo Building project...
       - echo Build started on `date`
       - mvn package
-      - docker build -t stefanauwyang/student-enrollment-image .
-      - docker push stefanauwyang/student-enrollment-image
+      - docker build -t student-enrollment .
+      - docker tag student-enrollment:latest $CONTAINER_REPOSITORY_URL:$TAG_NAME
+      - docker push $CONTAINER_REPOSITORY_URL:$TAG_NAME
   post_build:
     commands:
       - echo Build completed on `date`
