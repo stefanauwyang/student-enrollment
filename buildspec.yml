@@ -30,3 +30,4 @@ artifacts:
     - target/*.jar
     - scripts/*.sh
     - appspec.yml
+    - imagedefinitions.json
