@@ -6,6 +6,8 @@ import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
  */
 @RestController
 public class CourseController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
     @Autowired
     private CourseRepository courseRepository;
@@ -57,6 +61,7 @@ public class CourseController {
             course = courseRepository.save(course);
             return ResponseEntity.ok(course);
         } else {
+            logger.info("Class id does not exists");
             return ResponseEntity.notFound().build();
         }
     }
@@ -75,6 +80,7 @@ public class CourseController {
             courseRepository.delete(course);
             return ResponseEntity.ok(classId);
         } else {
+            logger.info("Class id does not exists");
             return ResponseEntity.notFound().build();
         }
     }
@@ -112,7 +118,10 @@ public class CourseController {
         Optional<Course> db_course = courseRepository.findById(classId);
 
         // If class not exists, no need to continue
-        if (!db_course.isPresent()) return ResponseEntity.notFound().build();
+        if (!db_course.isPresent()) {
+            logger.info("Class id does not exists");
+            return ResponseEntity.notFound().build();
+        }
 
         // Find enrollments and return the students
         List<Enrollment> enrollments = enrollmentRepository.findAllByCourse(db_course.get());

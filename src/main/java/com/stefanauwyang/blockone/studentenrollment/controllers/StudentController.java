@@ -8,6 +8,8 @@ import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.SemesterRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,8 @@ import java.util.stream.StreamSupport;
  */
 @RestController
 public class StudentController {
+
+    private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     @Autowired
     private StudentRepository studentRepository;
@@ -63,6 +67,7 @@ public class StudentController {
             student = studentRepository.save(student);
             return ResponseEntity.ok(student);
         } else {
+            logger.info("Student id does not exists");
             return ResponseEntity.notFound().build();
         }
     }
@@ -81,6 +86,7 @@ public class StudentController {
             studentRepository.delete(student);
             return ResponseEntity.ok(studentId);
         } else {
+            logger.info("Student id does not exists");
             return ResponseEntity.notFound().build();
         }
     }
@@ -97,6 +103,7 @@ public class StudentController {
         if (db_student.isPresent()) {
             return ResponseEntity.ok(db_student.get());
         } else {
+            logger.info("Student id does not exists");
             return ResponseEntity.notFound().build();
         }
     }
@@ -137,7 +144,7 @@ public class StudentController {
      */
     @GetMapping("/students/{studentId}/semesters/{semesterId}/classes")
     public ResponseEntity classesOfStudentIdInSemesterId(@PathVariable("studentId") Long studentId,
-                                    @PathVariable("semesterId") Long semesterId) {
+                                                         @PathVariable("semesterId") Long semesterId) {
         List<Enrollment> enrollments = enrollmentRepository.findAllByStudentOrSemester(Student.builder().id(studentId).build(),
                 Semester.builder().id(semesterId).build());
         List<Course> courses = enrollments.stream()

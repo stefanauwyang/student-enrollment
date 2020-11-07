@@ -3,6 +3,8 @@ package com.stefanauwyang.blockone.studentenrollment.controllers;
 import com.stefanauwyang.blockone.studentenrollment.db.models.Semester;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.SemesterRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,8 @@ import java.util.Optional;
  */
 @RestController
 public class SemesterController {
+
+    private static final Logger logger = LoggerFactory.getLogger(SemesterController.class);
 
     @Autowired
     private SemesterRepository semesterRepository;
@@ -51,6 +55,7 @@ public class SemesterController {
             semester = semesterRepository.save(semester);
             return ResponseEntity.ok(semester);
         } else {
+            logger.info("Semester id does not exists");
             return ResponseEntity.notFound().build();
         }
     }
@@ -69,6 +74,7 @@ public class SemesterController {
             semesterRepository.delete(semester);
             return ResponseEntity.ok(semesterId);
         } else {
+            logger.info("Semester id does not exists");
             return ResponseEntity.notFound().build();
         }
     }

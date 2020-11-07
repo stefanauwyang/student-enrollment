@@ -108,7 +108,7 @@ public class ReqStudentOperationTest {
     @Test
     public void studentWillNotBeAbleToEnrollClosedSemester() throws Exception {
 
-        String url = "http://localhost:%d/enrollments/semester/%s/classes/%s/students/%s/enroll";
+        String url = "http://localhost:%d/enrollments/semesters/%s/classes/%s/students/%s/enroll";
         String requestUrl = String.format(url, port, closedSemester.getId(), course.getId(), student.getId());
 
         assertEquals("Enrolling closed semester", Semester.CLOSED, closedSemester.getStatus());

@@ -9,6 +9,8 @@ import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepositor
 import com.stefanauwyang.blockone.studentenrollment.db.repos.SemesterRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
 import com.stefanauwyang.blockone.studentenrollment.exceptions.CreditException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
  */
 @RestController
 public class EnrollmentController {
+
+    private static final Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
 
     @Autowired
     private EnrollmentRepository enrollmentRepository;
@@ -56,7 +60,7 @@ public class EnrollmentController {
      * @param studentId  for enrollment
      * @return enrollment from db
      */
-    @PostMapping("/enrollments/semester/{semesterId}/classes/{classId}/students/{studentId}/enroll")
+    @PostMapping("/enrollments/semesters/{semesterId}/classes/{classId}/students/{studentId}/enroll")
     public ResponseEntity enrollStudentToClass(@PathVariable("semesterId") Long semesterId,
                                                @PathVariable("classId") Long classId,
                                                @PathVariable("studentId") Long studentId) {
@@ -64,20 +68,32 @@ public class EnrollmentController {
         Optional<Semester> db_semester = semesterRepository.findById(semesterId);
 
         // If semester not present, no need to continue
-        if (!db_semester.isPresent()) return ResponseEntity.notFound().build();
+        if (!db_semester.isPresent()) {
+            logger.info("Semester does not exists");
+            return ResponseEntity.notFound().build();
+        }
 
         // Check if semester is open for registration
-        if (!Semester.OPEN.equals(db_semester.get().getStatus())) return ResponseEntity.badRequest().build();
+        if (!Semester.OPEN.equals(db_semester.get().getStatus())) {
+            logger.info("Semester status is not OPEN for registration, status: {}", db_semester.get().getStatus());
+            return ResponseEntity.badRequest().build();
+        }
 
         Optional<Course> db_course = courseRepository.findById(classId);
 
         // If course not found, no need to continue
-        if (!db_course.isPresent()) return ResponseEntity.notFound().build();
+        if (!db_course.isPresent()) {
+            logger.info("Class id does not exists");
+            return ResponseEntity.notFound().build();
+        }
 
         Optional<Student> db_student = studentRepository.findById(studentId);
 
         // If student not found, no need to continue
-        if (!db_student.isPresent()) return ResponseEntity.notFound().build();
+        if (!db_student.isPresent()) {
+            logger.info("Student id does not exists");
+            return ResponseEntity.notFound().build();
+        }
 
         // Check if there is already existing enrollment
         Optional<Enrollment> db_enrollment = enrollmentRepository.findByStudentAndSemesterAndCourse(db_student.get(), db_semester.get(), db_course.get());
