@@ -10,7 +10,8 @@ phases:
       - java -version
   pre_build:
     commands:
-      - $(aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 421904971359.dkr.ecr.us-east-1.amazonaws.com)
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 421904971359.dkr.ecr.us-east-1.amazonaws.com
       - docker pull $CONTAINER_REPOSITORY_URL:$TAG_NAME || true
   build:
     commands:
@@ -19,9 +20,9 @@ phases:
       - mvn package
       - docker build -t student-enrollment .
       - docker tag student-enrollment:latest $CONTAINER_REPOSITORY_URL:$TAG_NAME
-      - docker push $CONTAINER_REPOSITORY_URL:$TAG_NAME
   post_build:
     commands:
+      - docker push $CONTAINER_REPOSITORY_URL:$TAG_NAME
       - echo Build completed on `date`
 
 artifacts:
