@@ -2,7 +2,7 @@
 swagger: "2.0"
 info:
   description: "Student Enrollment backend API"
-  version: "2020-11-08T17:33:19Z"
+  version: "2020-11-08T19:07:17Z"
   title: "Student Enrollment API"
 host: "blockone.stefanauwyang.com"
 schemes:
@@ -543,6 +543,77 @@ paths:
       produces:
       - "application/json"
       parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+  /students/{id}/semesters:
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+  /students/{id}/semesters/{semesterId}:
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+  /students/{id}/semesters/{semesterId}/classes:
+    get:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "semesterId"
+        in: "path"
+        required: true
+        type: "string"
       - name: "id"
         in: "path"
         required: true
