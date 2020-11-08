@@ -43,7 +43,9 @@ public class CourseController {
      */
     @PostMapping("/classes")
     public ResponseEntity createClass(@RequestBody Course course) {
+        logger.debug("Request contains body: " + course);
         Course db_course = courseRepository.save(course);
+        logger.debug("Response contains body: " + course);
         return ResponseEntity.ok(db_course);
     }
 
@@ -57,12 +59,16 @@ public class CourseController {
     @PutMapping("/classes/{classId}")
     public ResponseEntity modifyClass(@PathVariable("classId") Long classId,
                                       @RequestBody Course course) {
+        logger.debug("Request contains path classId: " + classId);
+        logger.debug("Request contains body: " + course);
         Optional<Course> db_course = courseRepository.findById(classId);
         if (db_course.isPresent()) {
             course.setId(classId);
             course = courseRepository.save(course);
+            logger.debug("Response contains body: " + course);
             return ResponseEntity.ok(course);
         } else {
+            logger.error("Given classId not found in database");
             throw new BadRequestException("Class id does not exists");
         }
     }
@@ -75,12 +81,15 @@ public class CourseController {
      */
     @DeleteMapping("/classes/{classId}")
     public ResponseEntity deleteCourse(@PathVariable("classId") Long classId) {
+        logger.debug("Request contains path classId: " + classId);
         Optional<Course> db_course = courseRepository.findById(classId);
         if (db_course.isPresent()) {
             Course course = db_course.get();
             courseRepository.delete(course);
+            logger.debug("Request contains body: " + classId);
             return ResponseEntity.ok(classId);
         } else {
+            logger.error("Given classId not found in database");
             throw new BadRequestException("Class id does not exists");
         }
     }
@@ -93,10 +102,13 @@ public class CourseController {
      */
     @GetMapping("/classes/{classId}")
     public ResponseEntity getClassById(@PathVariable("classId") Long classId) {
+        logger.debug("Request contains path classId: " + classId);
         Optional<Course> db_course = courseRepository.findById(classId);
         if (db_course.isPresent()) {
+            logger.debug("Request contains body: " + db_course);
             return ResponseEntity.ok(db_course);
         } else {
+            logger.error("Given classId not found in database");
             throw new BadRequestException("Class id does not exists");
         }
     }
@@ -111,13 +123,19 @@ public class CourseController {
     @GetMapping("/classes")
     public ResponseEntity fetchClasses(@RequestParam(value = "name") Optional<String> name,
                                        @RequestParam(value = "credit") Optional<Integer> credit) {
+        logger.debug("Request contains param name: " + name);
+        logger.debug("Request contains param credit: " + credit);
+
         List<Course> courses;
         if (name.isPresent()
                 || credit.isPresent()) {
+            logger.debug("Fetching with params");
             courses = courseRepository.findAllByNameContainingIgnoreCaseOrCredit(name, credit);
         } else {
+            logger.debug("Fetching without params");
             courses = courseRepository.findAll();
         }
+        logger.debug("Response contains body: " + courses);
         return ResponseEntity.ok(courses);
     }
 
@@ -129,12 +147,14 @@ public class CourseController {
      */
     @GetMapping("/classes/{classId}/students")
     public ResponseEntity studentsInClassId(@PathVariable("classId") Long classId) {
+        logger.debug("Request contains path classId: " + classId);
 
         // Find if class exists
         Optional<Course> db_course = courseRepository.findById(classId);
 
         // If class not exists, no need to continue
         if (!db_course.isPresent()) {
+            logger.error("Given class id not found in database");
             throw new BadRequestException("Class id does not exists");
         }
 
@@ -143,6 +163,7 @@ public class CourseController {
         List<Student> students = enrollments.stream()
                 .map(Enrollment::getStudent)
                 .collect(Collectors.toList());
+        logger.debug("Response contains body: " + students);
         return ResponseEntity.ok(students);
     }
 

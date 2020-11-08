@@ -64,7 +64,7 @@ public class SemesterController {
             logger.debug("Response contains body: " + semester);
             return ResponseEntity.ok(semester);
         } else {
-            logger.debug("Given semester id not found in database");
+            logger.error("Given semester id not found in database");
             throw new BadRequestException("Semester id does not exists");
         }
     }
@@ -87,7 +87,7 @@ public class SemesterController {
             logger.debug("Response contains body: " + semesterId);
             return ResponseEntity.ok(semesterId);
         } else {
-            logger.debug("Given semester id not found in database");
+            logger.error("Given semester id not found in database");
             throw new BadRequestException("Semester id does not exists");
         }
     }
@@ -104,9 +104,9 @@ public class SemesterController {
     public ResponseEntity semesters(@RequestParam("id") Optional<Long> id,
                                     @RequestParam("name") Optional<String> name,
                                     @RequestParam("status") Optional<String> status) {
-        logger.debug("Request contains path id: " + id);
-        logger.debug("Request contains path name: " + name);
-        logger.debug("Request contains path status: " + status);
+        logger.debug("Request contains param id: " + id);
+        logger.debug("Request contains param name: " + name);
+        logger.debug("Request contains param status: " + status);
 
         List<Semester> semesters;
 

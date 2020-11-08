@@ -49,6 +49,7 @@ public class EnrollmentController {
      */
     @PostMapping("/enrollments")
     public ResponseEntity createEnrollment(@RequestBody Enrollment enrollment) {
+        logger.debug("Request contains body: " + enrollment);
         return enrollStudentToClass(enrollment.getSemester().getId(),
                 enrollment.getCourse().getId(),
                 enrollment.getStudent().getId());
@@ -66,8 +67,8 @@ public class EnrollmentController {
     public ResponseEntity enrollStudentToClass(@PathVariable("semesterId") Long semesterId,
                                                @PathVariable("classId") Long classId,
                                                @PathVariable("studentId") Long studentId) {
-
         logger.debug("Request received to enroll student id " + studentId + " to class id " + classId
+
                 + " on semester id " + semesterId);
         Optional<Semester> db_semester = semesterRepository.findById(semesterId);
 
@@ -138,6 +139,8 @@ public class EnrollmentController {
         }
 
         enrollment = enrollmentRepository.save(enrollment);
+
+        logger.debug("Response contains body: " + enrollment);
         return ResponseEntity.ok(enrollment);
 
     }
@@ -150,12 +153,15 @@ public class EnrollmentController {
      */
     @DeleteMapping("/enrollments/{enrollmentId}")
     public ResponseEntity deleteEnrollment(@PathVariable("enrollmentId") Long enrollmentId) {
+        logger.debug("Request contains path enrollmentId: " + enrollmentId);
         Optional<Enrollment> db_enrollment = enrollmentRepository.findById(enrollmentId);
         if (db_enrollment.isPresent()) {
             Enrollment enrollment = db_enrollment.get();
             enrollmentRepository.delete(enrollment);
+            logger.debug("Request contains body: " + enrollmentId);
             return ResponseEntity.ok(enrollmentId);
         } else {
+            logger.error("Given enrollment id not found in database");
             throw new BadRequestException("Enrollment does not exists");
         }
     }
@@ -172,18 +178,24 @@ public class EnrollmentController {
     public ResponseEntity fetchStudents(@RequestParam(value = "student_id") Optional<Long> student_id,
                                         @RequestParam(value = "semester_id") Optional<Long> semester_id,
                                         @RequestParam(value = "class_id") Optional<Long> class_id) {
+        logger.debug("Request contains path student_id: " + student_id);
+        logger.debug("Request contains path semester_id: " + semester_id);
+        logger.debug("Request contains path class_id: " + class_id);
 
         List<Enrollment> enrollments;
 
         if (student_id.isPresent() || semester_id.isPresent() || class_id.isPresent()) {
+            logger.debug("Fetching with paths");
             enrollments = enrollmentRepository.findAllByStudentIdOrSemesterIdOrCourseId(
                     student_id,
                     semester_id,
                     class_id);
         } else {
+            logger.debug("Fetching without paths");
             enrollments = enrollmentRepository.findAll();
         }
 
+        logger.debug("Response contains body: " + enrollments);
         return ResponseEntity.ok(enrollments);
 
     }
@@ -196,11 +208,13 @@ public class EnrollmentController {
      */
     @GetMapping("/enrollments/classes/{classId}/students")
     public ResponseEntity fetchStudentsByEnrolledClass(@PathVariable("classId") Long classId) {
+        logger.debug("Request contains path classId: " + classId);
 
         Optional<Course> course = courseRepository.findById(classId);
 
         // Check if course not found
         if (!course.isPresent()) {
+            logger.error("Class id not found in database");
             throw new BadRequestException("Class does not exists");
         }
 
@@ -210,6 +224,7 @@ public class EnrollmentController {
                 .map(Enrollment::getStudent)
                 .collect(Collectors.toList());
 
+        logger.debug("Response contains body: " + students);
         return ResponseEntity.ok(students);
 
     }
