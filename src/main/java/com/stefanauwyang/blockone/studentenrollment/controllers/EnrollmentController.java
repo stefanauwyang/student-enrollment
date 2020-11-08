@@ -8,7 +8,9 @@ import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.SemesterRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
-import com.stefanauwyang.blockone.studentenrollment.exceptions.CreditException;
+import com.stefanauwyang.blockone.studentenrollment.exceptions.BadRequestException;
+import com.stefanauwyang.blockone.studentenrollment.exceptions.UnprocessableException;
+import com.stefanauwyang.blockone.studentenrollment.exceptions.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,41 +67,46 @@ public class EnrollmentController {
                                                @PathVariable("classId") Long classId,
                                                @PathVariable("studentId") Long studentId) {
 
+        logger.debug("Request received to enroll student id " + studentId + " to class id " + classId
+                + " on semester id " + semesterId);
         Optional<Semester> db_semester = semesterRepository.findById(semesterId);
 
         // If semester not present, no need to continue
         if (!db_semester.isPresent()) {
-            logger.info("Semester does not exists");
-            return ResponseEntity.notFound().build();
+            logger.error("Semester id not found: " + semesterId);
+            throw new BadRequestException("Semester does not exists");
         }
 
         // Check if semester is open for registration
         if (!Semester.OPEN.equals(db_semester.get().getStatus())) {
-            logger.info("Semester status is not OPEN for registration, status: {}", db_semester.get().getStatus());
-            return ResponseEntity.badRequest().build();
+            logger.error("Semester id: " + semesterId + " status is not OPEN but " + db_semester.get().getStatus());
+            throw new BadRequestException("Semester status is not OPEN for registration, status: " + db_semester.get().getStatus());
         }
 
         Optional<Course> db_course = courseRepository.findById(classId);
 
         // If course not found, no need to continue
         if (!db_course.isPresent()) {
-            logger.info("Class id does not exists");
-            return ResponseEntity.notFound().build();
+            logger.error("Class id not found: " + classId);
+            throw new BadRequestException("Class id does not exists");
         }
 
         Optional<Student> db_student = studentRepository.findById(studentId);
 
         // If student not found, no need to continue
         if (!db_student.isPresent()) {
-            logger.info("Student id does not exists");
-            return ResponseEntity.notFound().build();
+            logger.error("Student id not found: " + studentId);
+            throw new BadRequestException("Student id does not exists");
         }
 
         // Check if there is already existing enrollment
         Optional<Enrollment> db_enrollment = enrollmentRepository.findByStudentAndSemesterAndCourse(db_student.get(), db_semester.get(), db_course.get());
 
         // Check if enrollment already existing
-        if (db_enrollment.isPresent()) return ResponseEntity.unprocessableEntity().build();
+        if (db_enrollment.isPresent()) {
+            logger.error("Enrollment id already exists: " + studentId);
+            throw new UnprocessableException("Enrollment already exists");
+        }
 
         // Enroll the student to course in semester
         Enrollment enrollment = Enrollment.builder()
@@ -107,6 +114,9 @@ public class EnrollmentController {
                 .course(db_course.get())
                 .student(db_student.get())
                 .build();
+
+        logger.debug("Student id " + studentId + " enrolling for class id " + classId + " on "
+                + semesterId + " semester.");
 
         // Validate credits. Fetch enrollments from db where student_id , and semester_id
         List<Enrollment> enrollments = enrollmentRepository.findAllByStudentIdAndSemesterId(enrollment.getStudent().getId(),
@@ -116,10 +126,16 @@ public class EnrollmentController {
         int sum = enrollments.stream()
                 .mapToInt(e -> e.getCourse().getCredit())
                 .sum();
+
+        logger.debug("Total existing credits: " + sum + ", credits will be added: " + db_course.get().getCredit());
         sum += db_course.get().getCredit();
 
         // If max credit reached, throw exception
-        if (sum > 20) throw new CreditException("Credit exceed maximum enroll credits 20 per semester");
+        if (sum > 20) {
+            logger.error("Rejecting as total credits will be over 20 (" + sum + ") if enrolled student id " + studentId
+                    + " to class id " + classId + " on semester id " + semesterId);
+            throw new ValidationException("Credit exceed maximum enroll credits 20 per semester");
+        }
 
         enrollment = enrollmentRepository.save(enrollment);
         return ResponseEntity.ok(enrollment);
@@ -140,7 +156,7 @@ public class EnrollmentController {
             enrollmentRepository.delete(enrollment);
             return ResponseEntity.ok(enrollmentId);
         } else {
-            return ResponseEntity.notFound().build();
+            throw new BadRequestException("Enrollment does not exists");
         }
     }
 
@@ -184,7 +200,9 @@ public class EnrollmentController {
         Optional<Course> course = courseRepository.findById(classId);
 
         // Check if course not found
-        if (!course.isPresent()) return ResponseEntity.notFound().build();
+        if (!course.isPresent()) {
+            throw new BadRequestException("Class does not exists");
+        }
 
         // Find all enrollments for a class from db
         List<Enrollment> enrollments = enrollmentRepository.findAllByCourse(course.get());

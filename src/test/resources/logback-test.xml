@@ -28,7 +28,7 @@
         <appender-ref ref="console" />
     </logger>
 
-    <logger name="com.stefanauwyang.blockone" level="error" additivity="false">
+    <logger name="com.stefanauwyang.blockone" level="debug" additivity="false">
         <appender-ref ref="file" />
         <appender-ref ref="console" />
     </logger>

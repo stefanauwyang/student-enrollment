@@ -6,6 +6,8 @@ import com.stefanauwyang.blockone.studentenrollment.db.models.Student;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
+import com.stefanauwyang.blockone.studentenrollment.exceptions.BadRequestException;
+import com.stefanauwyang.blockone.studentenrollment.exceptions.UnprocessableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +63,7 @@ public class CourseController {
             course = courseRepository.save(course);
             return ResponseEntity.ok(course);
         } else {
-            logger.info("Class id does not exists");
-            return ResponseEntity.notFound().build();
+            throw new BadRequestException("Class id does not exists");
         }
     }
 
@@ -80,8 +81,23 @@ public class CourseController {
             courseRepository.delete(course);
             return ResponseEntity.ok(classId);
         } else {
-            logger.info("Class id does not exists");
-            return ResponseEntity.notFound().build();
+            throw new BadRequestException("Class id does not exists");
+        }
+    }
+
+    /**
+     * API to find existing class (course) by its id.
+     *
+     * @param classId as id to be retrieved
+     * @return class from db
+     */
+    @GetMapping("/classes/{classId}")
+    public ResponseEntity getClassById(@PathVariable("classId") Long classId) {
+        Optional<Course> db_course = courseRepository.findById(classId);
+        if (db_course.isPresent()) {
+            return ResponseEntity.ok(db_course);
+        } else {
+            throw new BadRequestException("Class id does not exists");
         }
     }
 
@@ -119,8 +135,7 @@ public class CourseController {
 
         // If class not exists, no need to continue
         if (!db_course.isPresent()) {
-            logger.info("Class id does not exists");
-            return ResponseEntity.notFound().build();
+            throw new BadRequestException("Class id does not exists");
         }
 
         // Find enrollments and return the students

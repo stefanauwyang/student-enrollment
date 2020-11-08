@@ -8,6 +8,7 @@ import com.stefanauwyang.blockone.studentenrollment.db.repos.CourseRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.EnrollmentRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.SemesterRepository;
 import com.stefanauwyang.blockone.studentenrollment.db.repos.StudentRepository;
+import com.stefanauwyang.blockone.studentenrollment.exceptions.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,8 +68,7 @@ public class StudentController {
             student = studentRepository.save(student);
             return ResponseEntity.ok(student);
         } else {
-            logger.info("Student id does not exists");
-            return ResponseEntity.notFound().build();
+            throw new BadRequestException("Student id does not exists");
         }
     }
 
@@ -86,8 +86,7 @@ public class StudentController {
             studentRepository.delete(student);
             return ResponseEntity.ok(studentId);
         } else {
-            logger.info("Student id does not exists");
-            return ResponseEntity.notFound().build();
+            throw new BadRequestException("Student id does not exists");
         }
     }
 
@@ -103,8 +102,7 @@ public class StudentController {
         if (db_student.isPresent()) {
             return ResponseEntity.ok(db_student.get());
         } else {
-            logger.info("Student id does not exists");
-            return ResponseEntity.notFound().build();
+            throw new BadRequestException("Student id does not exists");
         }
     }
 
