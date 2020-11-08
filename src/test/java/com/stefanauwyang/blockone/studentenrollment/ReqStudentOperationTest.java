@@ -138,6 +138,25 @@ public class ReqStudentOperationTest {
     public void studentWillNotBeAbleToEnrollMoreThan20Credits() throws Exception {
 
         // Start with class id 1 until credits maxed out
+        tryEnrollToSemester(student, openSemester);
+
+    }
+
+    @Test
+    public void studentWillBeAbleToEnrollMoreThan20CreditsIfDifferentSemester() throws Exception {
+
+        // Use with OPEN semester id 9 and 10
+        Semester[] openSemesters = restTemplate.getForObject("http://localhost:" + port + "/semesters?status=open", Semester[].class);
+
+        for (Semester openSemester : openSemesters) {
+            tryEnrollToSemester(student, openSemester);
+
+        }
+
+    }
+
+    private void tryEnrollToSemester(Student student, Semester openSemester) {
+        // Start with class id 1 until credits maxed out
         int n = 1;
 
         // New student not yet registered to any credits, existing credits is 0
@@ -162,45 +181,6 @@ public class ReqStudentOperationTest {
 
             n++;
         }
-
-    }
-
-    @Test
-    public void studentWillBeAbleToEnrollMoreThan20CreditsIfDifferentSemester() throws Exception {
-
-        // Use with OPEN semester id 9 and 10
-        Semester[] openSemesters = restTemplate.getForObject("http://localhost:" + port + "/semesters?status=open", Semester[].class);
-
-        for (Semester openSemester : openSemesters) {
-
-            // Start with class id 1 until credits maxed out
-            int n = 1;
-
-            // New student not yet registered to any credits, existing credits is 0
-            Integer existingCredits = 0;
-            while (true) {
-
-                // Get the class to know how much credit it has
-                Course class_n = restTemplate.getForObject("http://localhost:" + port + "/classes/" + n, Course.class);
-                int expectedCreditsAfterEnroll = existingCredits + class_n.getCredit();
-
-                assertEquals("Enrolling OPEN semester", Semester.OPEN, openSemester.getStatus());
-
-                enrollment = tryEnrollClass(student, class_n, openSemester);
-                existingCredits = expectedCreditsAfterEnroll;
-
-                if (expectedCreditsAfterEnroll <= 20) {
-                    assertNotNull("Should be able to enroll because credits will be 20 or less", enrollment.getId());
-                } else {
-                    assertNull("Should not be able to enroll because credits will be more than 20", enrollment.getId());
-                    break;
-                }
-
-                n++;
-            }
-
-        }
-
     }
 
     private Enrollment tryEnrollClass(Student student, Course class_n, Semester semester_n) {
