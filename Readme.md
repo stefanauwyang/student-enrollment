@@ -437,7 +437,7 @@ Response:
 APIs:
 - API to add new students or modify them -> POST: /students
 - API to create a new semester -> POST: /semesters
-- API to enroll a student into a class for a particular semester -> POST: /students/1/class/1
+- API to enroll a student into a class for a particular semester -> POST: /enrollments/semesters/1/classes/1/students/1/enroll
 - API to get the list of classes for a particular student for a semester, or the fully history of classes enrolled.
 - API to get the list of students enrolled in a class for a particular semester.
 - API to drop a student from a class.
