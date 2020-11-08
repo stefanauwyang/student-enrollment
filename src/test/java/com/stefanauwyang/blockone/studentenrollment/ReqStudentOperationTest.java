@@ -16,6 +16,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -135,8 +137,6 @@ public class ReqStudentOperationTest {
     @Test
     public void studentWillNotBeAbleToEnrollMoreThan20Credits() throws Exception {
 
-        assertEquals("Enrolling closed semester", Semester.CLOSED, closedSemester.getStatus());
-
         // Start with class id 1 until credits maxed out
         int n = 1;
 
@@ -148,7 +148,9 @@ public class ReqStudentOperationTest {
             Course class_n = restTemplate.getForObject("http://localhost:" + port + "/classes/" + n, Course.class);
             int expectedCreditsAfterEnroll = existingCredits + class_n.getCredit();
 
-            enrollment = tryEnrollClass(class_n);
+            assertEquals("Enrolling OPEN semester", Semester.OPEN, openSemester.getStatus());
+
+            enrollment = tryEnrollClass(student, class_n, openSemester);
             existingCredits = expectedCreditsAfterEnroll;
 
             if (expectedCreditsAfterEnroll <= 20) {
@@ -163,11 +165,49 @@ public class ReqStudentOperationTest {
 
     }
 
-    private Enrollment tryEnrollClass(Course class_n) {
-        logger.debug("Trying to register student id " + student.getId() + " to class id " + class_n.getId() + " on semester id " + openSemester.getId());
+    @Test
+    public void studentWillBeAbleToEnrollMoreThan20CreditsIfDifferentSemester() throws Exception {
+
+        // Use with OPEN semester id 9 and 10
+        Semester[] openSemesters = restTemplate.getForObject("http://localhost:" + port + "/semesters?status=open", Semester[].class);
+
+        for (Semester openSemester : openSemesters) {
+
+            // Start with class id 1 until credits maxed out
+            int n = 1;
+
+            // New student not yet registered to any credits, existing credits is 0
+            Integer existingCredits = 0;
+            while (true) {
+
+                // Get the class to know how much credit it has
+                Course class_n = restTemplate.getForObject("http://localhost:" + port + "/classes/" + n, Course.class);
+                int expectedCreditsAfterEnroll = existingCredits + class_n.getCredit();
+
+                assertEquals("Enrolling OPEN semester", Semester.OPEN, openSemester.getStatus());
+
+                enrollment = tryEnrollClass(student, class_n, openSemester);
+                existingCredits = expectedCreditsAfterEnroll;
+
+                if (expectedCreditsAfterEnroll <= 20) {
+                    assertNotNull("Should be able to enroll because credits will be 20 or less", enrollment.getId());
+                } else {
+                    assertNull("Should not be able to enroll because credits will be more than 20", enrollment.getId());
+                    break;
+                }
+
+                n++;
+            }
+
+        }
+
+    }
+
+    private Enrollment tryEnrollClass(Student student, Course class_n, Semester semester_n) {
+        logger.debug("Trying to register student id " + semester_n.getId() + " to class id " + class_n.getId() + " on semester id " + openSemester.getId());
 
         String url = "http://localhost:%d/enrollments/semesters/%s/classes/%s/students/%s/enroll";
-        String requestUrl = String.format(url, port, openSemester.getId(), class_n.getId(), student.getId());
+        String requestUrl = String.format(url, port, semester_n.getId(), class_n.getId(), student.getId());
 
         // After this call, total credits will be less or equals 20
         Enrollment enrollment = restTemplate.postForObject(
