@@ -100,6 +100,10 @@ public class ReqStudentOperationTest {
 
         restTemplate.delete("http://localhost:" + port + "/enrollments/" + enrollment.getId());
 
+        restTemplate.delete("http://localhost:" + port + "/students/" + student.getId());
+
+        restTemplate.delete("http://localhost:" + port + "/semesters/" + openSemester.getId());
+
     }
 
     /**
@@ -121,6 +125,10 @@ public class ReqStudentOperationTest {
                 Enrollment.class);
 
         assertNull("Enrollment id should be null when enrolling closed semester", enrollment.getId());
+
+        restTemplate.delete("http://localhost:" + port + "/students/" + student.getId());
+
+        restTemplate.delete("http://localhost:" + port + "/semesters/" + openSemester.getId());
 
     }
 
@@ -175,9 +183,7 @@ public class ReqStudentOperationTest {
     @After
     public void after() {
 
-        restTemplate.delete("http://localhost:" + port + "/students/" + student.getId());
         restTemplate.delete("http://localhost:" + port + "/semesters/" + closedSemester.getId());
-        restTemplate.delete("http://localhost:" + port + "/semesters/" + openSemester.getId());
         restTemplate.delete("http://localhost:" + port + "/classes/" + course.getId());
 
     }
