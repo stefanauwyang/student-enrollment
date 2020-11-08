@@ -440,17 +440,40 @@ Response:
 ```
 
 APIs:
-- API to add new students or modify them -> POST: /students
-- API to create a new semester -> POST: /semesters
-- API to enroll a student into a class for a particular semester -> POST: /enrollments/semesters/1/classes/1/students/1/enroll
+- API to add new students or modify them.
+```
+POST: https://blockone.stefanauwyang.com/students
+``` 
+- API to create a new semester.
+```
+POST: https://blockone.stefanauwyang.com/semesters
+``` 
+- API to enroll a student into a class for a particular semester. 
+```
+POST: https://blockone.stefanauwyang.com/enrollments/semesters/{semesterId}/classes/{classId}/students/{studentId}/enroll
+or
+POST: https://blockone.stefanauwyang.com/enrollments (with enrollment object in request body)
+```
 - API to get the list of classes for a particular student for a semester, or the fully history of classes enrolled.
+```
+GET: https://blockone.stefanauwyang.com/enrollments?student_id={studentId}&semester_id={semesterId}
+GET: https://blockone.stefanauwyang.com/classes/{classId}
+```
 - API to get the list of students enrolled in a class for a particular semester.
+```
+GET: https://blockone.stefanauwyang.com/enrollments?class_id={classId}&semester_id={semesterId}
+GET: https://blockone.stefanauwyang.com/students/{studentId}
+```
 - API to drop a student from a class.
+```
+GET: https://blockone.stefanauwyang.com/enrollments?class_id={classId}&student_id={studentId}
+DELETE: https://blockone.stefanauwyang.com/enrollments/{enrollmentId}
+```
 
 Logic:
-- When enrolled, it will calculate max 20 credits per semster.
+- [When enrolled, it will calculate max 20 credits per semster.](src/test/java/com/stefanauwyang/blockone/studentenrollment/ReqStudentOperationTest.java)
 - When enrolled, if the credits min 10, full_time flag become false.
 - School administrator and Student will log in through front end app before allowed
   to access APIs.
-- School administration have access to create student identities, but not allowed to call delete.
-- Students will be able to enroll themselves into classes before each term
+- [School administration have access to create student identities, but not allowed to call delete.](src/test/java/com/stefanauwyang/blockone/studentenrollment/ReqAdminOperationTest.java)
+- [Students will be able to enroll themselves into classes before each term](src/test/java/com/stefanauwyang/blockone/studentenrollment/ReqStudentOperationTest.java)
