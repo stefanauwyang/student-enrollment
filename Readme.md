@@ -34,6 +34,11 @@ controlled in Front End.
 4. ach student is only allowed to be enrolled in a maximum of 20 credits for each semester.  
 There is a minimum of 10 credits to be considered full time.
 
+## Swagger documentation to try out via Postman
+This API available on API Gateway with CI/CD, [Swagger documentation](swagger.yaml) available for Postman testing
+
+![](misc/postman.png)
+
 ### Create student
 Request: POST /students
 ```json
