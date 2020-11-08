@@ -36,7 +36,9 @@ public class SemesterController {
      */
     @PostMapping("/semesters")
     public ResponseEntity createSemester(@RequestBody Semester semester) {
+        logger.debug("Request contains body: " + semester);
         semester = semesterRepository.save(semester);
+        logger.debug("Response contains object: " + semester);
         return ResponseEntity.ok(semester);
     }
 
@@ -50,12 +52,19 @@ public class SemesterController {
     @PutMapping("/semesters/{semesterId}")
     public ResponseEntity modifySemester(@PathVariable("semesterId") Long semesterId,
                                          @RequestBody Semester semester) {
+
+        logger.debug("Request contains path semesterId: " + semesterId);
+        logger.debug("Request contains body: " + semester);
+
         Optional<Semester> db_semester = semesterRepository.findById(semesterId);
         if (db_semester.isPresent()) {
             semester.setId(semesterId);
             semester = semesterRepository.save(semester);
+
+            logger.debug("Response contains body: " + semester);
             return ResponseEntity.ok(semester);
         } else {
+            logger.debug("Given semester id not found in database");
             throw new BadRequestException("Semester id does not exists");
         }
     }
@@ -68,12 +77,17 @@ public class SemesterController {
      */
     @DeleteMapping("/semesters/{semesterId}")
     public ResponseEntity deleteSemester(@PathVariable("semesterId") Long semesterId) {
+        logger.debug("Request contains path semesterId: " + semesterId);
+
         Optional<Semester> db_semester = semesterRepository.findById(semesterId);
         if (db_semester.isPresent()) {
             Semester semester = db_semester.get();
             semesterRepository.delete(semester);
+
+            logger.debug("Response contains body: " + semesterId);
             return ResponseEntity.ok(semesterId);
         } else {
+            logger.debug("Given semester id not found in database");
             throw new BadRequestException("Semester id does not exists");
         }
     }
@@ -90,15 +104,21 @@ public class SemesterController {
     public ResponseEntity semesters(@RequestParam("id") Optional<Long> id,
                                     @RequestParam("name") Optional<String> name,
                                     @RequestParam("status") Optional<String> status) {
+        logger.debug("Request contains path id: " + id);
+        logger.debug("Request contains path name: " + name);
+        logger.debug("Request contains path status: " + status);
 
         List<Semester> semesters;
 
         if (id.isPresent() || name.isPresent() || status.isPresent()) {
+            logger.debug("Fetching with criteria");
             semesters = semesterRepository.findAllByIdOrNameIgnoreCaseOrStatusIgnoreCase(id, name, status);
         } else {
+            logger.debug("Fetching without criteria");
             semesters = semesterRepository.findAll();
         }
 
+        logger.debug("Response contains body: " + semesters);
         return ResponseEntity.ok(semesters);
 
     }
